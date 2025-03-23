@@ -6,19 +6,19 @@
     {
       "text": "Лидерство по издержкам",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategySelector",
       "description": "Стратегия минимизации затрат и предложения более низких цен"
     },
     {
       "text": "Дифференциация",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategySelector",
       "description": "Стратегия создания уникальных продуктов с особыми характеристиками"
     },
     {
       "text": "Фокусирование",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategySelector",
       "description": "Стратегия концентрации на конкретном сегменте рынка или нише"
     },
     {
@@ -30,19 +30,19 @@
     {
       "text": "Гибридная стратегия",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategySelector",
       "description": "Стратегия одновременного достижения дифференциации и низких затрат"
     },
     {
       "text": "Платформенная стратегия",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategySelector",
       "description": "Создание многосторонней платформы, соединяющей различные группы пользователей"
     },
     {
       "text": "Стратегия подрывных инноваций",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategySelector",
       "description": "Создание более простых и доступных решений, вытесняющих существующие"
     },
     {

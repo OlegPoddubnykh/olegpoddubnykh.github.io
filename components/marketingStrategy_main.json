@@ -28,10 +28,16 @@
       "description": "Пиратские метрики для анализа пользовательского пути"
     },
     {
-      "text": "К бизнес-модели",
+      "text": "Спланировать ресурсы для реализации",
       "action": "goto",
-      "target": "businessModelCanvas",
-      "description": "Вернуться к бизнес-модели Canvas"
+      "target": "implementationPhase_resources",
+      "description": "Перейти к планированию ресурсов для реализации стратегии"
+    },
+    {
+      "text": "Вернуться к бизнес-модели",
+      "action": "goto",
+      "target": "businessModelCanvas_toBe",
+      "description": "Пересмотреть целевую бизнес-модель"
     },
     {
       "text": "Назад",

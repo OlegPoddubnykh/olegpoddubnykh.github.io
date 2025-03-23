@@ -7,25 +7,19 @@
       "text": "Цифровой маркетинг",
       "action": "goto",
       "target": "marketingStrategy_digital",
-      "description": "Стратегии продвижения в цифровой среде"
+      "description": "Вернуться к стратегиям цифрового маркетинга"
     },
     {
       "text": "Воронка AAARRR",
       "action": "goto",
       "target": "marketingStrategy_aaarrr",
-      "description": "Пиратские метрики для анализа пользовательского пути"
+      "description": "Перейти к пиратским метрикам для анализа пользовательского пути"
     },
     {
-      "text": "Традиционный маркетинг",
-      "action": "goto",
-      "target": "marketingStrategy_traditional",
-      "description": "Офлайн-каналы и стратегии"
-    },
-    {
-      "text": "Маркетинговая стратегия: обзор",
+      "text": "Обзор маркетинговых стратегий",
       "action": "goto",
       "target": "marketingStrategy_main",
-      "description": "Вернуться к обзору маркетинговых стратегий"
+      "description": "Вернуться к общему обзору маркетинговых стратегий"
     },
     {
       "text": "Назад",

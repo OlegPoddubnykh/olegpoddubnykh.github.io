@@ -16,6 +16,12 @@
       "description": "Определить необходимые ресурсы для реализации стратегии"
     },
     {
+      "text": "Пересмотреть стратегию роста",
+      "action": "goto",
+      "target": "growthStrategySelector",
+      "description": "Вернуться к выбору стратегии роста"
+    },
+    {
       "text": "Вернуться к текущей бизнес-модели",
       "action": "goto",
       "target": "businessModelCanvas_asIs",
