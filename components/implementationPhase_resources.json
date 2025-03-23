@@ -20,6 +20,12 @@
       "action": "goto",
       "target": "implementationPhase1",
       "secondary": true
+    },
+    {
+      "text": "Выбрать модель управления проектом",
+      "action": "goto",
+      "target": "projectManagement_selector",
+      "description": "Определить оптимальную методологию управления для реализации стратегии"
     }
   ]
 } 

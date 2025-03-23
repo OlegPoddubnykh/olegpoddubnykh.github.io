@@ -28,6 +28,12 @@
       "description": "Пересмотреть текущую бизнес-модель"
     },
     {
+      "text": "Выбрать методологию реализации",
+      "action": "goto",
+      "target": "projectManagement_selector",
+      "description": "Определить оптимальный подход к управлению реализацией стратегии"
+    },
+    {
       "text": "Назад",
       "action": "back",
       "secondary": true
