@@ -10,6 +10,12 @@
       "description": "Стратегии продвижения в цифровой среде"
     },
     {
+      "text": "Воронка AAARRR",
+      "action": "goto",
+      "target": "marketingStrategy_aaarrr",
+      "description": "Пиратские метрики для анализа пользовательского пути"
+    },
+    {
       "text": "Традиционный маркетинг",
       "action": "goto",
       "target": "marketingStrategy_traditional",

@@ -22,6 +22,12 @@
       "description": "Создание и распространение ценного контента"
     },
     {
+      "text": "Воронка AAARRR",
+      "action": "goto",
+      "target": "marketingStrategy_aaarrr",
+      "description": "Пиратские метрики для анализа пользовательского пути"
+    },
+    {
       "text": "К бизнес-модели",
       "action": "goto",
       "target": "businessModelCanvas",
