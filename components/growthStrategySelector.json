@@ -6,26 +6,32 @@
     {
       "text": "Проникновение на рынок",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategy_marketPenetration",
       "description": "Увеличение продаж существующих продуктов на текущих рынках"
     },
     {
       "text": "Развитие рынка",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategy_marketDevelopment",
       "description": "Вывод существующих продуктов на новые рынки или сегменты"
     },
     {
       "text": "Развитие продукта",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategy_productDevelopment",
       "description": "Создание новых или улучшенных продуктов для текущего рынка"
     },
     {
       "text": "Диверсификация",
       "action": "goto",
-      "target": "businessModelCanvas_toBe",
+      "target": "growthStrategy_diversification",
       "description": "Разработка новых продуктов для новых рынков"
+    },
+    {
+      "text": "Спроектировать целевую бизнес-модель",
+      "action": "goto",
+      "target": "businessModelCanvas_toBe",
+      "description": "Перейти к проектированию целевой бизнес-модели на основе выбранных стратегий"
     },
     {
       "text": "Вернуться к базовой стратегии конкуренции",
