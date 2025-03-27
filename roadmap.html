@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imot.io Marketing Roadmap 2025</title>
+    <style>
+        :root {
+            --okr1: #e74c3c;
+            --okr2: #2ecc71;
+            --okr3: #f1c40f;
+            --okr4: #9b59b6;
+            --bg: #f8f9fa;
+            --text: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        select, button {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        select:hover, button:hover {
+            border-color: var(--okr1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        button.active {
+            background-color: var(--text);
+            color: white;
+        }
+
+        .gantt-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .gantt-chart {
+            display: grid;
+            grid-template-columns: 300px repeat(12, 1fr);
+            gap: 5px;
+            min-width: 100%;
+            padding: 20px 0;
+        }
+
+        .month-header {
+            text-align: center;
+            padding: 10px;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+        }
+
+        .task-row {
+            display: contents;
+            position: relative;
+        }
+
+        .task-info {
+            padding: 12px;
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 1;
+            border-right: 2px solid var(--bg);
+        }
+
+        .task-bar {
+            height: 40px;
+            border-radius: 6px;
+            margin: 2px 0;
+            position: relative;
+            transition: 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: white;
+            font-size: 0.9em;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .task-bar:hover {
+            filter: brightness(1.1);
+            transform: scaleY(1.05);
+            z-index: 3;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: 0.2s;
+            min-width: 300px;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+
+        .legend-item:hover {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .legend-item.filtered {
+            opacity: 0.5;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .stats {
+            margin-top: 30px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stats-title {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-card {
+            padding: 15px;
+            border-radius: 8px;
+            background: var(--bg);
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: rgba(44, 62, 80, 0.7);
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .gantt-chart {
+                grid-template-columns: 200px repeat(12, 100px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">
+                <h1>🚀 Imot.io Marketing Roadmap 2025</h1>
+            </div>
+            <div class="filters">
+                <select id="okrFilter">
+                    <option value="all">Все OKR</option>
+                    <option value="1">Objective 1: +2 млн MRR</option>
+                    <option value="2">Objective 2: Упрощение внедрения</option>
+                    <option value="3">Objective 3: ESOV</option>
+                    <option value="4">Objective 4: Процессы</option>
+                </select>
+                <select id="ownerFilter">
+                    <option value="all">Все исполнители</option>
+                    <!-- Будет заполнено динамически -->
+                </select>
+                <select id="periodFilter">
+                    <option value="all">Весь период</option>
+                    <option value="q1">Q1 2025</option>
+                    <option value="q2">Q2 2025</option>
+                    <option value="q3">Q3 2025</option>
+                    <option value="q4">Q4 2025</option>
+                </select>
+                <button id="toggleView" title="Переключить вид">Квартально</button>
+            </div>
+        </div>
+
+        <div class="gantt-container">
+            <div class="gantt-chart" id="ganttChart"></div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item" data-okr="1">
+                <div class="legend-color" style="background: var(--okr1)"></div>
+                <span>Objective 1: +2 млн MRR</span>
+            </div>
+            <div class="legend-item" data-okr="2">
+                <div class="legend-color" style="background: var(--okr2)"></div>
+                <span>Objective 2: Упрощение внедрения</span>
+            </div>
+            <div class="legend-item" data-okr="3">
+                <div class="legend-color" style="background: var(--okr3)"></div>
+                <span>Objective 3: ESOV</span>
+            </div>
+            <div class="legend-item" data-okr="4">
+                <div class="legend-color" style="background: var(--okr4)"></div>
+                <span>Objective 4: Процессы</span>
+            </div>
+        </div>
+
+        <div class="stats">
+            <h2 class="stats-title">📊 Статистика проекта</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTasks">0</div>
+                    <div class="stat-label">Всего задач</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="inProgressTasks">0</div>
+                    <div class="stat-label">Задач в работе</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedTasks">0</div>
+                    <div class="stat-label">Завершенных задач</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="upcomingTasks">0</div>
+                    <div class="stat-label">Предстоящих задач</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+<script>
+const tasks = [
+    {
+        id: 1,
+        okr: 1,
+        kr: '1.1',
+        name: 'Настроить Roistat и CRM (сквозная аналитика, CPL/CAC)',
+        start: '2025-05-01',
+        end: '2025-05-31',
+        owner: 'Олег',
+        metrics: 'CAC: ~120k → ≤80k, Новый MRR ~300k → 600k',
+        status: 'not-started'
+    },
+    {
+        id: 2,
+        okr: 1,
+        kr: '1.1',
+        name: 'Прописать скрипты ABM (цепочки писем и звонков) + АНАЛИТИКА, ОТЧЕТНОСТЬ',
+        start: '2025-05-01',
+        end: '2025-05-31',
+        owner: 'Степан, Олег',
+        metrics: '3 цепочки (мед, EdTech, +1)',
+        status: 'not-started'
+    },
+    {
+        id: 3,
+        okr: 1,
+        kr: '1.1',
+        name: 'Собрать базу для ABM (мед, EdTech), 100-200 компаний на отрасль',
+        start: '2025-05-01',
+        end: '2025-06-15',
+        owner: 'Степан',
+        metrics: '100 компаний в CRM',
+        status: 'not-started'
+    },
+    {
+        id: 4,
+        okr: 1,
+        kr: '1.1',
+        name: 'Найти email рассылки для участия (5 разных)',
+        start: '2025-05-15',
+        end: '2025-12-31',
+        owner: 'Олег, Даниил, Степан',
+        metrics: '5 рассылок',
+        status: 'not-started'
+    },
+    {
+        id: 5,
+        okr: 1,
+        kr: '1.1',
+        name: 'Таргетированная реклама (кейсы)',
+        start: '2025-04-30',
+        end: '2025-12-31',
+        owner: 'Олег, подрядчик',
+        metrics: 'CAC ≤80k',
+        status: 'in-progress'
+    },
+    {
+        id: 6,
+        okr: 1,
+        kr: '1.1',
+        name: 'Настройка рекламных кампаний (контекст + медийка)',
+        start: '2025-04-15',
+        end: '2025-12-31',
+        owner: 'Олег, подрядчик',
+        metrics: 'CAC ≤80k',
+        status: 'in-progress'
+    },
+    {
+        id: 7,
+        okr: 1,
+        kr: '1.1',
+        name: 'SEO',
+        start: '2025-04-15',
+        end: '2025-12-31',
+        owner: 'Олег, подрядчик',
+        metrics: 'CAC ≤80k',
+        status: 'in-progress'
+    },
+    {
+        id: 8,
+        okr: 1,
+        kr: '1.1',
+        name: 'Участие в конференциях и выставках',
+        start: '2025-07-01',
+        end: '2025-12-31',
+        owner: 'Олег, Тамара',
+        metrics: '15 мероприятий, CAC ≤200k',
+        status: 'not-started'
+    },
+    {
+        id: 9,
+        okr: 1,
+        kr: '1.2',
+        name: 'Лендинг под 2 индустрии (мед, EdTech)',
+        start: '2025-05-01',
+        end: '2025-05-30',
+        owner: 'Олег, Юлия',
+        metrics: '2 лендинга',
+        status: 'not-started'
+    },
+    {
+        id: 10,
+        okr: 1,
+        kr: '1.2',
+        name: 'Офферы для upsell',
+        start: '2025-05-15',
+        end: '2025-05-30',
+        owner: 'Тамара',
+        metrics: 'Воронка допродаж',
+        status: 'not-started'
+    },
+    {
+        id: 11,
+        okr: 1,
+        kr: '1.2',
+        name: 'Написание кейсов (Фомина, Lerna)',
+        start: '2025-06-01',
+        end: '2025-06-15',
+        owner: 'Олег, Виктория, Анастасия Купцова',
+        metrics: '2 кейса',
+        status: 'not-started'
+    },
+    {
+        id: 12,
+        okr: 1,
+        kr: '1.2',
+        name: 'Отчеты и аккаунт-менеджмент',
+        start: '2025-04-30',
+        end: '2025-12-31',
+        owner: 'Олег, Виктория',
+        metrics: 'Отток ≤300k',
+        status: 'in-progress'
+    },
+    {
+        id: 13,
+        okr: 2,
+        kr: '2.2',
+        name: 'Готовые словари и гайды',
+        start: '2025-07-01',
+        end: '2025-07-31',
+        owner: 'Олег, Анастасия Соколова',
+        metrics: 'Онбординг 14 дней',
+        status: 'not-started'
+    },
+    {
+        id: 14,
+        okr: 2,
+        kr: '2.3',
+        name: 'Рефакторинг главной страницы',
+        start: '2025-05-15',
+        end: '2025-05-30',
+        owner: 'Олег, Тамара, подрядчик',
+        metrics: 'CR +2-3%',
+        status: 'not-started'
+    },
+    {
+        id: 15,
+        okr: 2,
+        kr: '2.3',
+        name: 'Изучение бизнес-метрик клиентов',
+        start: '2025-07-01',
+        end: '2025-07-15',
+        owner: 'Олег, Тамара, Виктория',
+        metrics: 'CAC ≤80k',
+        status: 'not-started'
+    },
+    {
+        id: 16,
+        okr: 3,
+        kr: '3.1',
+        name: 'Публикации в СМИ',
+        start: '2025-09-01',
+        end: '2025-11-30',
+        owner: 'Олег, Тамара',
+        metrics: '8 публикаций',
+        status: 'not-started'
+    },
+    {
+        id: 17,
+        okr: 3,
+        kr: '3.1',
+        name: 'Настройка сбора запросов',
+        start: '2025-05-01',
+        end: '2025-12-31',
+        owner: 'Олег, Тамара',
+        metrics: 'Система сбора',
+        status: 'not-started'
+    },
+    {
+        id: 18,
+        okr: 3,
+        kr: '3.2',
+        name: 'Создание кейсов (видео/текст)',
+        start: '2025-09-01',
+        end: '2025-09-15',
+        owner: 'Контент, Видеограф, Шульга',
+        metrics: '5-6 кейсов',
+        status: 'not-started'
+    },
+    {
+        id: 19,
+        okr: 3,
+        kr: '3.3',
+        name: 'Telegram-канал',
+        start: '2025-07-01',
+        end: '2025-07-15',
+        owner: 'Маркетолог (N), Консультант (X)',
+        metrics: '+30% трафика',
+        status: 'not-started'
+    },
+    {
+        id: 20,
+        okr: 3,
+        kr: '3.3',
+        name: 'Масштабное исследование',
+        start: '2025-08-01',
+        end: '2025-08-15',
+        owner: 'Олег, Анастасия Соколова, Тамара',
+        metrics: 'Аналитический отчет',
+        status: 'not-started'
+    },
+    {
+        id: 21,
+        okr: 3,
+        kr: '3.3',
+        name: 'Участие в рейтингах',
+        start: '2025-06-01',
+        end: '2025-12-31',
+        owner: 'Олег, Тамара',
+        metrics: '3 награды',
+        status: 'not-started'
+    },
+    {
+        id: 22,
+        okr: 3,
+        kr: '3.3',
+        name: 'Эдтех-проекты как авторы',
+        start: '2025-07-01',
+        end: '2025-07-15',
+        owner: 'Тамара, Анастасия Соколова',
+        metrics: '3 проекта',
+        status: 'not-started'
+    },
+    {
+        id: 23,
+        okr: 3,
+        kr: '3.3',
+        name: 'Методичка SPEECH',
+        start: '2025-07-01',
+        end: '2025-07-15',
+        owner: 'Олег, Тамара',
+        metrics: 'Готовая методичка',
+        status: 'not-started'
+    },
+    {
+        id: 24,
+        okr: 4,
+        kr: '4.1',
+        name: 'Управление процессами',
+        start: '2025-05-01',
+        end: '2025-12-31',
+        owner: 'All the Heads',
+        metrics: 'Дашборд метрик',
+        status: 'not-started'
+    },
+    {
+        id: 25,
+        okr: 4,
+        kr: '4.2',
+        name: 'Интеграции с CRM',
+        start: '2025-08-01',
+        end: '2025-12-31',
+        owner: 'Технический тимлид, Анастасия Соколова, Олег',
+        metrics: '5 интеграций',
+        status: 'not-started'
+    },
+    {
+        id: 26,
+        okr: 4,
+        kr: '4.3',
+        name: 'Email-рассылки и вебинары',
+        start: '2025-05-01',
+        end: '2025-12-31',
+        owner: 'Виктория, Тамара, контент',
+        metrics: 'Открываемость >30%',
+        status: 'not-started'
+    },
+    {
+        id: 27,
+        okr: 4,
+        kr: '4.4',
+        name: 'Сбор обратной связи (NPS)',
+        start: '2025-05-01',
+        end: '2025-12-31',
+        owner: 'Виктория, Тамара',
+        metrics: 'NPS +8',
+        status: 'not-started'
+    },
+    {
+        id: 28,
+        okr: 4,
+        kr: '4.5',
+        name: 'Формирование контент-отдела',
+        start: '2025-07-01',
+        end: '2025-12-31',
+        owner: 'CMO, HR',
+        metrics: '2 сотрудника',
+        status: 'not-started'
+    }
+];
+
+// Настройка отображения
+let currentView = 'monthly'; // monthly или quarterly
+let filteredOkrs = [];
+
+// Заполнение списка исполнителей
+function populateOwnerFilter() {
+    const ownerFilter = document.getElementById('ownerFilter');
+    const owners = new Set();
+    
+    tasks.forEach(task => {
+        if (task.owner) {
+            const taskOwners = task.owner.split(', ');
+            taskOwners.forEach(owner => owners.add(owner.trim()));
+        }
+    });
+    
+    const sortedOwners = Array.from(owners).sort();
+    
+    sortedOwners.forEach(owner => {
+        const option = document.createElement('option');
+        option.value = owner;
+        option.textContent = owner;
+        ownerFilter.appendChild(option);
+    });
+}
+
+// Обновление отображения статистики
+function updateStats() {
+    const today = new Date();
+    
+    // Получаем только отфильтрованные задачи
+    const filteredTasks = tasks.filter(task => {
+        const okrMatch = document.getElementById('okrFilter').value === 'all' || task.okr.toString() === document.getElementById('okrFilter').value;
+        const ownerMatch = document.getElementById('ownerFilter').value === 'all' || task.owner.includes(document.getElementById('ownerFilter').value);
+        return okrMatch && ownerMatch;
+    });
+    
+    document.getElementById('totalTasks').textContent = filteredTasks.length;
+    
+    const inProgress = filteredTasks.filter(task => {
+        const startDate = new Date(task.start);
+        const endDate = new Date(task.end);
+        return startDate <= today && endDate >= today;
+    }).length;
+    
+    const completed = filteredTasks.filter(task => {
+        const endDate = new Date(task.end);
+        return endDate < today;
+    }).length;
+    
+    const upcoming = filteredTasks.filter(task => {
+        const startDate = new Date(task.start);
+        return startDate > today;
+    }).length;
+    
+    document.getElementById('inProgressTasks').textContent = inProgress;
+    document.getElementById('completedTasks').textContent = completed;
+    document.getElementById('upcomingTasks').textContent = upcoming;
+}
+
+// Рендеринг диаграммы Ганта
+function renderGantt() {
+    const okrFilter = document.getElementById('okrFilter').value;
+    const ownerFilter = document.getElementById('ownerFilter').value;
+    const periodFilter = document.getElementById('periodFilter').value;
+    
+    const chart = document.getElementById('ganttChart');
+    chart.innerHTML = '';
+    
+    let timeHeaders;
+    if (currentView === 'monthly') {
+        timeHeaders = [
+            'Апр 2025', 'Май 2025', 'Июн 2025', 'Июл 2025', 'Авг 2025', 'Сен 2025',
+            'Окт 2025', 'Ноя 2025', 'Дек 2025'
+        ];
+    } else {
+        timeHeaders = ['Q2 2025', 'Q3 2025', 'Q4 2025'];
+    }
+    
+    // Заголовок
+    chart.innerHTML += `<div class="month-header">Задача</div>`;
+    timeHeaders.forEach(m => {
+        chart.innerHTML += `<div class="month-header">${m}</div>`;
+    });
+    
+    // Фильтрация задач
+    const filteredTasks = tasks.filter(task => {
+        const okrMatch = okrFilter === 'all' || task.okr.toString() === okrFilter;
+        const ownerMatch = ownerFilter === 'all' || task.owner.includes(ownerFilter);
+        
+        // Фильтрация по периоду
+        let periodMatch = true;
+        if (periodFilter !== 'all') {
+            const startDate = new Date(task.start);
+            const endDate = new Date(task.end);
+            
+            if (periodFilter === 'q1') {
+                periodMatch = (startDate <= new Date('2025-03-31') && endDate >= new Date('2025-01-01'));
+            } else if (periodFilter === 'q2') {
+                periodMatch = (startDate <= new Date('2025-06-30') && endDate >= new Date('2025-04-01'));
+            } else if (periodFilter === 'q3') {
+                periodMatch = (startDate <= new Date('2025-09-30') && endDate >= new Date('2025-07-01'));
+            } else if (periodFilter === 'q4') {
+                periodMatch = (startDate <= new Date('2025-12-31') && endDate >= new Date('2025-10-01'));
+            }
+        }
+        
+        return okrMatch && ownerMatch && periodMatch;
+    });
+    
+    // Сортировка по OKR, KR и дате начала
+    filteredTasks.sort((a, b) => {
+        if (a.okr !== b.okr) return a.okr - b.okr;
+        if (a.kr !== b.kr) return a.kr.localeCompare(b.kr);
+        return new Date(a.start) - new Date(b.start);
+    });
+    
+    // Рендеринг задач
+    filteredTasks.forEach(task => {
+        const row = document.createElement('div');
+        row.className = 'task-row';
+        
+        // Информация о задаче
+        const info = document.createElement('div');
+        info.className = 'task-info';
+        info.innerHTML = `
+            <div><strong>${task.kr}</strong> ${task.name}</div>
+            <small>${task.owner || 'Не назначено'}</small>
+        `;
+        chart.appendChild(info);
+        
+        // Временная шкала
+        for (let i = 0; i < timeHeaders.length; i++) {
+            const cell = document.createElement('div');
+            
+            let inPeriod = false;
+            const taskStartDate = new Date(task.start);
+            const taskEndDate = new Date(task.end);
+            
+            if (currentView === 'monthly') {
+                const monthYear = timeHeaders[i].split(' ');
+                const month = getMonthNumber(monthYear[0]);
+                const year = parseInt(monthYear[1]);
+                
+                const periodStart = new Date(year, month, 1);
+                const periodEnd = new Date(year, month + 1, 0);
+                
+                inPeriod = (taskStartDate <= periodEnd && taskEndDate >= periodStart);
+            } else {
+                // Для квартального представления
+                const quarter = timeHeaders[i].split(' ')[0].substring(1);
+                const year = parseInt(timeHeaders[i].split(' ')[1]);
+                
+                let quarterStart, quarterEnd;
+                if (quarter === '2') {
+                    quarterStart = new Date(year, 3, 1); // Апрель
+                    quarterEnd = new Date(year, 5, 30); // Июнь
+                } else if (quarter === '3') {
+                    quarterStart = new Date(year, 6, 1); // Июль
+                    quarterEnd = new Date(year, 8, 30); // Сентябрь
+                } else if (quarter === '4') {
+                    quarterStart = new Date(year, 9, 1); // Октябрь
+                    quarterEnd = new Date(year, 11, 31); // Декабрь
+                }
+                
+                inPeriod = (taskStartDate <= quarterEnd && taskEndDate >= quarterStart);
+            }
+            
+            if (inPeriod) {
+                const bar = document.createElement('div');
+                bar.className = 'task-bar';
+                bar.style.backgroundColor = `var(--okr${task.okr})`;
+                
+                if (currentView === 'quarterly') {
+                    bar.textContent = task.name;
+                }
+                
+                // Подсказка
+                bar.addEventListener('mouseover', (e) => {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.innerHTML = `
+                        <strong>${task.name}</strong><br>
+                        <small>OKR ${task.okr} • KR ${task.kr}</small><br><br>
+                        📅 ${formatDate(task.start)} - ${formatDate(task.end)}<br>
+                        👤 ${task.owner || 'Не назначено'}<br>
+                        📊 ${task.metrics}
+                    `;
+                    tooltip.style.opacity = 1;
+                    tooltip.style.left = `${e.pageX + 15}px`;
+                    tooltip.style.top = `${e.pageY + 15}px`;
+                });
+
+                bar.addEventListener('mouseout', () => {
+                    document.getElementById('tooltip').style.opacity = 0;
+                });
+
+                cell.appendChild(bar);
+            }
+            
+            chart.appendChild(cell);
+        }
+    });
+    
+    // Обновление статистики
+    updateStats();
+}
+
+// Вспомогательные функции
+function getMonthNumber(monthName) {
+    const months = {
+        'Янв': 0, 'Фев': 1, 'Мар': 2, 'Апр': 3, 'Май': 4, 'Июн': 5,
+        'Июл': 6, 'Авг': 7, 'Сен': 8, 'Окт': 9, 'Ноя': 10, 'Дек': 11
+    };
+    return months[monthName];
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU');
+}
+
+// Обработчики событий
+document.getElementById('okrFilter').addEventListener('change', renderGantt);
+document.getElementById('ownerFilter').addEventListener('change', renderGantt);
+document.getElementById('periodFilter').addEventListener('change', renderGantt);
+
+document.getElementById('toggleView').addEventListener('click', function() {
+    if (currentView === 'monthly') {
+        currentView = 'quarterly';
+        this.textContent = 'Помесячно';
+    } else {
+        currentView = 'monthly';
+        this.textContent = 'Квартально';
+    }
+    this.classList.toggle('active');
+    renderGantt();
+});
+
+// Фильтрация по клику на легенду
+document.querySelectorAll('.legend-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const okr = this.getAttribute('data-okr');
+        
+        if (filteredOkrs.includes(okr)) {
+            // Удаляем из фильтрации
+            filteredOkrs = filteredOkrs.filter(o => o !== okr);
+            this.classList.remove('filtered');
+        } else {
+            // Добавляем в фильтрацию
+            if (filteredOkrs.length === 0) {
+                // Если фильтр еще не применен, добавляем все OKR сначала
+                document.querySelectorAll('.legend-item').forEach(i => {
+                    if (i !== this) {
+                        i.classList.add('filtered');
+                        filteredOkrs.push(i.getAttribute('data-okr'));
+                    }
+                });
+            } else {
+                // Добавляем только этот OKR
+                filteredOkrs.push(okr);
+                this.classList.add('filtered');
+            }
+        }
+        
+        // Если все элементы выбраны или все сняты, сбрасываем фильтрацию
+        if (filteredOkrs.length === 0 || filteredOkrs.length === 4) {
+            filteredOkrs = [];
+            document.querySelectorAll('.legend-item').forEach(i => {
+                i.classList.remove('filtered');
+            });
+            document.getElementById('okrFilter').value = 'all';
+        } else {
+            // Иначе устанавливаем фильтр на первый не отфильтрованный элемент
+            const visibleOkr = document.querySelector('.legend-item:not(.filtered)').getAttribute('data-okr');
+            document.getElementById('okrFilter').value = visibleOkr;
+        }
+        
+        renderGantt();
+    });
+});
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', function() {
+    populateOwnerFilter();
+    renderGantt();
+});
+</script>
+</body>
+</html> 
