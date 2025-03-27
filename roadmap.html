@@ -233,6 +233,68 @@
             font-size: 0.9em;
         }
 
+        .staff-stats {
+            margin-top: 30px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .staff-stats-title {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .staff-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .staff-card {
+            padding: 15px;
+            border-radius: 8px;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .staff-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .staff-tasks {
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .staff-bar {
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .staff-progress {
+            height: 100%;
+            border-radius: 3px;
+            background-color: var(--text);
+        }
+        
+        .draggable {
+            cursor: grab;
+        }
+        
+        .draggable:active {
+            cursor: grabbing;
+        }
+
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -318,6 +380,13 @@
                 </div>
             </div>
         </div>
+        
+        <div class="staff-stats">
+            <h2 class="staff-stats-title">👥 Статистика по исполнителям</h2>
+            <div class="staff-stats-grid" id="staffStats">
+                <!-- Статистика по сотрудникам будет добавлена динамически -->
+            </div>
+        </div>
     </div>
 
     <div class="tooltip" id="tooltip"></div>
@@ -331,7 +400,7 @@ const tasks = [
         name: 'Настроить Roistat и CRM (сквозная аналитика, CPL/CAC)',
         start: '2025-05-01',
         end: '2025-05-31',
-        owner: 'Олег Ширяев',
+        owner: 'Олег Поддубных',
         metrics: 'CAC: ~120k → ≤80k, Новый MRR ~300k → 600k',
         status: 'not-started'
     },
@@ -342,7 +411,7 @@ const tasks = [
         name: 'Прописать скрипты ABM (цепочки писем и звонков) + АНАЛИТИКА, ОТЧЕТНОСТЬ',
         start: '2025-05-01',
         end: '2025-05-31',
-        owner: 'Степан Соловьев, Олег Ширяев',
+        owner: 'Степан Соловьев, Олег Поддубных',
         metrics: '3 цепочки (мед, EdTech, +1)',
         status: 'not-started'
     },
@@ -364,7 +433,7 @@ const tasks = [
         name: 'Найти email рассылки для участия (5 разных)',
         start: '2025-05-15',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, Даниил Вировлянский, Степан Соловьев',
+        owner: 'Олег Поддубных, Даниил Вировлянский, Степан Соловьев',
         metrics: '5 рассылок',
         status: 'not-started'
     },
@@ -375,7 +444,7 @@ const tasks = [
         name: 'Таргетированная реклама (кейсы)',
         start: '2025-04-30',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, подрядчик',
+        owner: 'Олег Поддубных, подрядчик',
         metrics: 'CAC ≤80k',
         status: 'in-progress'
     },
@@ -386,7 +455,7 @@ const tasks = [
         name: 'Настройка рекламных кампаний (контекст + медийка)',
         start: '2025-04-15',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, подрядчик',
+        owner: 'Олег Поддубных, подрядчик',
         metrics: 'CAC ≤80k',
         status: 'in-progress'
     },
@@ -397,7 +466,7 @@ const tasks = [
         name: 'SEO',
         start: '2025-04-15',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, подрядчик',
+        owner: 'Олег Поддубных, подрядчик',
         metrics: 'CAC ≤80k',
         status: 'in-progress'
     },
@@ -408,7 +477,7 @@ const tasks = [
         name: 'Участие в конференциях и выставках',
         start: '2025-07-01',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, Тамара Мирзоян',
+        owner: 'Олег Поддубных, Тамара Мирзоян',
         metrics: '15 мероприятий, CAC ≤200k',
         status: 'not-started'
     },
@@ -419,7 +488,7 @@ const tasks = [
         name: 'Лендинг под 2 индустрии (мед, EdTech)',
         start: '2025-05-01',
         end: '2025-05-30',
-        owner: 'Олег Ширяев, Юлия Устькачкинцева',
+        owner: 'Олег Поддубных, Юлия Устькачкинцева',
         metrics: '2 лендинга',
         status: 'not-started'
     },
@@ -441,7 +510,7 @@ const tasks = [
         name: 'Написание кейсов (Фомина, Lerna)',
         start: '2025-06-01',
         end: '2025-06-15',
-        owner: 'Олег Ширяев, Виктория Колесникова, Анастасия Купцова',
+        owner: 'Олег Поддубных, Виктория Колесникова, Анастасия Купцова',
         metrics: '2 кейса',
         status: 'not-started'
     },
@@ -452,7 +521,7 @@ const tasks = [
         name: 'Отчеты и аккаунт-менеджмент',
         start: '2025-04-30',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, Виктория Колесникова',
+        owner: 'Олег Поддубных, Виктория Колесникова',
         metrics: 'Отток ≤300k',
         status: 'in-progress'
     },
@@ -463,7 +532,7 @@ const tasks = [
         name: 'Готовые словари и гайды',
         start: '2025-07-01',
         end: '2025-07-31',
-        owner: 'Олег Ширяев, Анастасия Соколова',
+        owner: 'Олег Поддубных, Анастасия Соколова',
         metrics: 'Онбординг 14 дней',
         status: 'not-started'
     },
@@ -474,7 +543,7 @@ const tasks = [
         name: 'Рефакторинг главной страницы',
         start: '2025-05-15',
         end: '2025-05-30',
-        owner: 'Олег Ширяев, Тамара Мирзоян, подрядчик',
+        owner: 'Олег Поддубных, Тамара Мирзоян, подрядчик',
         metrics: 'CR +2-3%',
         status: 'not-started'
     },
@@ -485,7 +554,7 @@ const tasks = [
         name: 'Изучение бизнес-метрик клиентов',
         start: '2025-07-01',
         end: '2025-07-15',
-        owner: 'Олег Ширяев, Тамара Мирзоян, Виктория Колесникова',
+        owner: 'Олег Поддубных, Тамара Мирзоян, Виктория Колесникова',
         metrics: 'CAC ≤80k',
         status: 'not-started'
     },
@@ -496,7 +565,7 @@ const tasks = [
         name: 'Публикации в СМИ',
         start: '2025-09-01',
         end: '2025-11-30',
-        owner: 'Олег Ширяев, Тамара Мирзоян',
+        owner: 'Олег Поддубных, Тамара Мирзоян',
         metrics: '8 публикаций',
         status: 'not-started'
     },
@@ -507,7 +576,7 @@ const tasks = [
         name: 'Настройка сбора запросов',
         start: '2025-05-01',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, Тамара Мирзоян',
+        owner: 'Олег Поддубных, Тамара Мирзоян',
         metrics: 'Система сбора',
         status: 'not-started'
     },
@@ -540,7 +609,7 @@ const tasks = [
         name: 'Масштабное исследование',
         start: '2025-08-01',
         end: '2025-08-15',
-        owner: 'Олег Ширяев, Анастасия Соколова, Тамара Мирзоян',
+        owner: 'Олег Поддубных, Анастасия Соколова, Тамара Мирзоян',
         metrics: 'Аналитический отчет',
         status: 'not-started'
     },
@@ -551,7 +620,7 @@ const tasks = [
         name: 'Участие в рейтингах',
         start: '2025-06-01',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, Тамара Мирзоян',
+        owner: 'Олег Поддубных, Тамара Мирзоян',
         metrics: '3 награды',
         status: 'not-started'
     },
@@ -573,7 +642,7 @@ const tasks = [
         name: 'Методичка SPEECH',
         start: '2025-07-01',
         end: '2025-07-15',
-        owner: 'Олег Ширяев, Тамара Мирзоян',
+        owner: 'Олег Поддубных, Тамара Мирзоян',
         metrics: 'Готовая методичка',
         status: 'not-started'
     },
@@ -584,7 +653,7 @@ const tasks = [
         name: 'Управление процессами',
         start: '2025-05-01',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, Виктория Колесникова, Анастасия Купцова, Анастасия Соколова, Технический тимлид',
+        owner: 'Олег Поддубных, Виктория Колесникова, Анастасия Купцова, Анастасия Соколова, Технический тимлид',
         metrics: 'Дашборд метрик',
         status: 'not-started'
     },
@@ -595,7 +664,7 @@ const tasks = [
         name: 'Интеграции с CRM',
         start: '2025-08-01',
         end: '2025-12-31',
-        owner: 'Технический тимлид, Анастасия Соколова, Олег Ширяев',
+        owner: 'Технический тимлид, Анастасия Соколова, Олег Поддубных',
         metrics: '5 интеграций',
         status: 'not-started'
     },
@@ -628,7 +697,7 @@ const tasks = [
         name: 'Формирование контент-отдела',
         start: '2025-07-01',
         end: '2025-12-31',
-        owner: 'Олег Ширяев, HR',
+        owner: 'Олег Поддубных, HR',
         metrics: '2 сотрудника',
         status: 'not-started'
     }
@@ -664,6 +733,82 @@ function updateTaskStatuses() {
         } else if (endDate < today) {
             task.status = 'completed';
         }
+    });
+}
+
+// Генерация статистики по сотрудникам
+function generateStaffStats() {
+    const today = getCurrentDateFor2025Demo();
+    const staffStatsContainer = document.getElementById('staffStats');
+    staffStatsContainer.innerHTML = '';
+    
+    // Собираем данные по сотрудникам
+    const staffData = {};
+    
+    tasks.forEach(task => {
+        if (task.owner) {
+            const owners = task.owner.split(', ');
+            owners.forEach(owner => {
+                const normalizedOwner = owner.trim();
+                
+                if (!staffData[normalizedOwner]) {
+                    staffData[normalizedOwner] = {
+                        total: 0,
+                        inProgress: 0,
+                        completed: 0,
+                        upcoming: 0
+                    };
+                }
+                
+                staffData[normalizedOwner].total++;
+                
+                const startDate = new Date(task.start);
+                const endDate = new Date(task.end);
+                
+                if (startDate <= today && endDate >= today) {
+                    staffData[normalizedOwner].inProgress++;
+                } else if (endDate < today) {
+                    staffData[normalizedOwner].completed++;
+                } else {
+                    staffData[normalizedOwner].upcoming++;
+                }
+            });
+        }
+    });
+    
+    // Преобразуем в массив для сортировки
+    const staffArray = Object.entries(staffData).map(([name, stats]) => ({
+        name,
+        ...stats
+    }));
+    
+    // Сортируем по количеству задач (от большего к меньшему)
+    staffArray.sort((a, b) => b.total - a.total);
+    
+    // Создаем карточки для каждого сотрудника
+    staffArray.forEach(staff => {
+        const card = document.createElement('div');
+        card.className = 'staff-card';
+        
+        // Вычисляем прогресс
+        const progressPercent = (staff.completed / staff.total) * 100;
+        
+        card.innerHTML = `
+            <div class="staff-name">
+                <span>${staff.name}</span>
+                <span>${staff.total} задач</span>
+            </div>
+            <div class="staff-tasks">
+                <span>В работе: ${staff.inProgress}</span>
+                <span>Завершено: ${staff.completed}</span>
+                <span>Предстоит: ${staff.upcoming}</span>
+            </div>
+            <div class="staff-bar">
+                <div class="staff-progress" style="width: ${progressPercent}%"></div>
+            </div>
+        `;
+        
+        staffStatsContainer.appendChild(card);
     });
 }
 
@@ -922,10 +1067,59 @@ function formatDate(dateString) {
     return date.toLocaleDateString('ru-RU');
 }
 
+// Функция для настройки перетаскивания (drag-and-scroll) для графика
+function setupDragToScroll() {
+    const container = document.querySelector('.gantt-container');
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+
+    container.classList.add('draggable');
+
+    container.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+        container.style.cursor = 'grabbing';
+    });
+
+    container.addEventListener('mouseleave', () => {
+        isDragging = false;
+        container.style.cursor = 'grab';
+    });
+
+    container.addEventListener('mouseup', () => {
+        isDragging = false;
+        container.style.cursor = 'grab';
+    });
+
+    container.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        // Предотвращаем выделение текста
+        e.preventDefault();
+        
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 2; // Скорость прокрутки
+        container.scrollLeft = scrollLeft - walk;
+    });
+}
+
 // Обработчики событий
-document.getElementById('okrFilter').addEventListener('change', renderGantt);
-document.getElementById('ownerFilter').addEventListener('change', renderGantt);
-document.getElementById('periodFilter').addEventListener('change', renderGantt);
+document.getElementById('okrFilter').addEventListener('change', () => {
+    renderGantt();
+    generateStaffStats();
+});
+
+document.getElementById('ownerFilter').addEventListener('change', () => {
+    renderGantt();
+    generateStaffStats();
+});
+
+document.getElementById('periodFilter').addEventListener('change', () => {
+    renderGantt();
+    generateStaffStats();
+});
 
 document.getElementById('toggleView').addEventListener('click', function() {
     if (currentView === 'monthly') {
@@ -963,6 +1157,7 @@ document.querySelectorAll('.legend-item').forEach(item => {
         }
         
         renderGantt();
+        generateStaffStats();
     });
 });
 
@@ -984,9 +1179,13 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.querySelector('.title').appendChild(dateInfo);
     
+    // Настраиваем перетаскивание графика
+    setupDragToScroll();
+    
     // Инициализируем страницу
     populateOwnerFilter();
     renderGantt();
+    generateStaffStats();
 });
 </script>
 </body>
