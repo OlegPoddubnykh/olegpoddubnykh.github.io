@@ -82,10 +82,10 @@
 
         .gantt-chart {
             display: grid;
-            grid-template-columns: 300px repeat(12, 1fr);
             gap: 5px;
             min-width: 100%;
             padding: 20px 0;
+            grid-auto-rows: minmax(45px, auto);
         }
 
         .month-header {
@@ -96,6 +96,7 @@
             top: 0;
             background: white;
             z-index: 2;
+            border-bottom: 2px solid var(--bg);
         }
 
         .task-row {
@@ -113,14 +114,15 @@
         }
 
         .task-bar {
-            height: 40px;
+            height: 36px;
             border-radius: 6px;
-            margin: 2px 0;
+            margin: 4px 0;
             position: relative;
             transition: 0.2s;
             cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
             padding: 0 10px;
             color: white;
             font-size: 0.9em;
@@ -128,6 +130,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .task-bar:hover {
@@ -513,7 +516,7 @@ const tasks = [
         name: 'Telegram-канал',
         start: '2025-07-01',
         end: '2025-07-15',
-        owner: 'Маркетолог (N), Консультант (X)',
+        owner: 'Тамара, Консультант (X)',
         metrics: '+30% трафика',
         status: 'not-started'
     },
@@ -590,7 +593,7 @@ const tasks = [
         name: 'Email-рассылки и вебинары',
         start: '2025-05-01',
         end: '2025-12-31',
-        owner: 'Виктория, Тамара, контент',
+        owner: 'Виктория, Тамара, Контент',
         metrics: 'Открываемость >30%',
         status: 'not-started'
     },
@@ -630,11 +633,23 @@ function populateOwnerFilter() {
     tasks.forEach(task => {
         if (task.owner) {
             const taskOwners = task.owner.split(', ');
-            taskOwners.forEach(owner => owners.add(owner.trim()));
+            taskOwners.forEach(owner => {
+                // Нормализация имен
+                let normalizedOwner = owner.trim();
+                if (normalizedOwner.toLowerCase() === 'контент' || normalizedOwner.toLowerCase() === 'контент-менеджер') {
+                    normalizedOwner = 'Контент';
+                }
+                owners.add(normalizedOwner);
+            });
         }
     });
     
     const sortedOwners = Array.from(owners).sort();
+    
+    // Очищаем перед заполнением
+    while (ownerFilter.options.length > 1) {
+        ownerFilter.remove(1);
+    }
     
     sortedOwners.forEach(owner => {
         const option = document.createElement('option');
@@ -688,19 +703,33 @@ function renderGantt() {
     chart.innerHTML = '';
     
     let timeHeaders;
+    let gridColumns;
+    
     if (currentView === 'monthly') {
         timeHeaders = [
             'Апр 2025', 'Май 2025', 'Июн 2025', 'Июл 2025', 'Авг 2025', 'Сен 2025',
             'Окт 2025', 'Ноя 2025', 'Дек 2025'
         ];
+        // Обновляем CSS для сетки при месячном отображении
+        chart.style.gridTemplateColumns = '300px repeat(9, 1fr)';
     } else {
         timeHeaders = ['Q2 2025', 'Q3 2025', 'Q4 2025'];
+        // Обновляем CSS для сетки при квартальном отображении  
+        chart.style.gridTemplateColumns = '300px repeat(3, 1fr)';
     }
     
     // Заголовок
-    chart.innerHTML += `<div class="month-header">Задача</div>`;
-    timeHeaders.forEach(m => {
-        chart.innerHTML += `<div class="month-header">${m}</div>`;
+    const headerInfo = document.createElement('div');
+    headerInfo.className = 'month-header';
+    headerInfo.textContent = 'Задачи проекта';
+    chart.appendChild(headerInfo);
+    
+    // Заголовки временных периодов
+    timeHeaders.forEach(header => {
+        const headerCell = document.createElement('div');
+        headerCell.className = 'month-header';
+        headerCell.textContent = header;
+        chart.appendChild(headerCell);
     });
     
     // Фильтрация задач
@@ -737,9 +766,6 @@ function renderGantt() {
     
     // Рендеринг задач
     filteredTasks.forEach(task => {
-        const row = document.createElement('div');
-        row.className = 'task-row';
-        
         // Информация о задаче
         const info = document.createElement('div');
         info.className = 'task-info';
@@ -749,15 +775,16 @@ function renderGantt() {
         `;
         chart.appendChild(info);
         
-        // Временная шкала
+        // Создаем ячейки для каждого периода
         for (let i = 0; i < timeHeaders.length; i++) {
             const cell = document.createElement('div');
             
-            let inPeriod = false;
             const taskStartDate = new Date(task.start);
             const taskEndDate = new Date(task.end);
+            let inPeriod = false;
             
             if (currentView === 'monthly') {
+                // Определяем, попадает ли задача в этот месяц
                 const monthYear = timeHeaders[i].split(' ');
                 const month = getMonthNumber(monthYear[0]);
                 const year = parseInt(monthYear[1]);
@@ -786,16 +813,18 @@ function renderGantt() {
                 inPeriod = (taskStartDate <= quarterEnd && taskEndDate >= quarterStart);
             }
             
+            // Если задача попадает в этот период, отображаем ее
             if (inPeriod) {
                 const bar = document.createElement('div');
                 bar.className = 'task-bar';
                 bar.style.backgroundColor = `var(--okr${task.okr})`;
                 
+                // В квартальном представлении добавляем текст задачи в полосу
                 if (currentView === 'quarterly') {
                     bar.textContent = task.name;
                 }
                 
-                // Подсказка
+                // Подсказка при наведении
                 bar.addEventListener('mouseover', (e) => {
                     const tooltip = document.getElementById('tooltip');
                     tooltip.innerHTML = `
@@ -861,38 +890,22 @@ document.querySelectorAll('.legend-item').forEach(item => {
     item.addEventListener('click', function() {
         const okr = this.getAttribute('data-okr');
         
-        if (filteredOkrs.includes(okr)) {
-            // Удаляем из фильтрации
-            filteredOkrs = filteredOkrs.filter(o => o !== okr);
-            this.classList.remove('filtered');
-        } else {
-            // Добавляем в фильтрацию
-            if (filteredOkrs.length === 0) {
-                // Если фильтр еще не применен, добавляем все OKR сначала
-                document.querySelectorAll('.legend-item').forEach(i => {
-                    if (i !== this) {
-                        i.classList.add('filtered');
-                        filteredOkrs.push(i.getAttribute('data-okr'));
-                    }
-                });
-            } else {
-                // Добавляем только этот OKR
-                filteredOkrs.push(okr);
-                this.classList.add('filtered');
-            }
-        }
+        // Снимаем выделение со всех элементов легенды
+        document.querySelectorAll('.legend-item').forEach(i => {
+            i.classList.remove('filtered');
+        });
         
-        // Если все элементы выбраны или все сняты, сбрасываем фильтрацию
-        if (filteredOkrs.length === 0 || filteredOkrs.length === 4) {
-            filteredOkrs = [];
-            document.querySelectorAll('.legend-item').forEach(i => {
-                i.classList.remove('filtered');
-            });
+        // Если выбран тот же OKR, что и раньше - сбрасываем фильтр
+        if (document.getElementById('okrFilter').value === okr) {
             document.getElementById('okrFilter').value = 'all';
         } else {
-            // Иначе устанавливаем фильтр на первый не отфильтрованный элемент
-            const visibleOkr = document.querySelector('.legend-item:not(.filtered)').getAttribute('data-okr');
-            document.getElementById('okrFilter').value = visibleOkr;
+            // Иначе устанавливаем новый фильтр и отмечаем другие элементы как отфильтрованные
+            document.getElementById('okrFilter').value = okr;
+            document.querySelectorAll('.legend-item').forEach(i => {
+                if (i.getAttribute('data-okr') !== okr) {
+                    i.classList.add('filtered');
+                }
+            });
         }
         
         renderGantt();
