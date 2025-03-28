@@ -350,7 +350,7 @@
                     <option value="q4">Q4 2025</option>
                 </select>
                 <button id="toggleView" title="Переключить вид">Квартально</button>
-                <button id="adminButton">Редактировать</button>
+                <button id="adminButton" onclick="window.location.href='admin.html'">Редактировать</button>
             </div>
         </div>
 
@@ -410,17 +410,20 @@
     <div class="tooltip" id="tooltip"></div>
 
 <script>
-// Загрузка данных из JSON файла
-async function loadTasks() {
-    try {
-        const response = await fetch('roadmap-data.json');
-        const data = await response.json();
-        return data.roadmap;
-    } catch (error) {
-        console.error('Error loading tasks:', error);
-        return [];
-    }
-}
+// Загрузка данных
+fetch('roadmap-data.json')
+    .then(response => response.json())
+    .then(data => {
+        // Проверяем, есть ли сохраненные данные в localStorage
+        const savedData = localStorage.getItem('roadmapData');
+        if (savedData) {
+            data = JSON.parse(savedData);
+        }
+        tasks = data.roadmap;
+        renderGantt();
+        generateStaffStats();
+    })
+    .catch(error => console.error('Error loading data:', error));
 
 // Настройка отображения
 let currentView = 'monthly'; // monthly или quarterly
