@@ -195,11 +195,17 @@
                                     return false;
                                 },
                                 action: function() {
+                                    console.log('Context menu: add_row_above clicked');
                                     const row = hot.getSelectedLast()[0];
+                                    console.log('Selected row:', row);
                                     const currentData = hot.getData();
+                                    console.log('Current data before:', currentData);
                                     const newRow = createNewRow();
+                                    console.log('New row:', newRow);
                                     currentData.splice(row, 0, newRow);
+                                    console.log('Current data after:', currentData);
                                     hot.loadData(currentData);
+                                    console.log('Data loaded');
                                 }
                             },
                             'add_row_below': {
@@ -209,11 +215,17 @@
                                     return false;
                                 },
                                 action: function() {
+                                    console.log('Context menu: add_row_below clicked');
                                     const row = hot.getSelectedLast()[0];
+                                    console.log('Selected row:', row);
                                     const currentData = hot.getData();
+                                    console.log('Current data before:', currentData);
                                     const newRow = createNewRow();
+                                    console.log('New row:', newRow);
                                     currentData.splice(row + 1, 0, newRow);
+                                    console.log('Current data after:', currentData);
                                     hot.loadData(currentData);
+                                    console.log('Data loaded');
                                 }
                             },
                             'remove_row': {
