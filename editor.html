@@ -138,6 +138,51 @@
                         }
                     ],
                     licenseKey: 'non-commercial-and-evaluation',
+                    contextMenu: {
+                        items: {
+                            'add_row_above': {
+                                name: 'Добавить строку выше',
+                                key: 'add_row_above',
+                                disabled: function() {
+                                    return false;
+                                }
+                            },
+                            'add_row_below': {
+                                name: 'Добавить строку ниже',
+                                key: 'add_row_below',
+                                disabled: function() {
+                                    return false;
+                                }
+                            },
+                            'remove_row': {
+                                name: 'Удалить строку',
+                                key: 'remove_row',
+                                disabled: function() {
+                                    return false;
+                                }
+                            },
+                            'duplicate_row': {
+                                name: 'Дублировать строку',
+                                key: 'duplicate_row',
+                                disabled: function() {
+                                    return false;
+                                }
+                            },
+                            'sep1': Handsontable.plugins.ContextMenu.SEPARATOR,
+                            'copy': {
+                                name: 'Копировать',
+                                key: 'copy'
+                            },
+                            'cut': {
+                                name: 'Вырезать',
+                                key: 'cut'
+                            },
+                            'paste': {
+                                name: 'Вставить',
+                                key: 'paste'
+                            }
+                        }
+                    },
                     afterChange: function(changes) {
                         if (changes) {
                             saveData();
