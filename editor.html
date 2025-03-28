@@ -66,6 +66,8 @@
 
         // Функция сохранения данных
         function saveData() {
+            if (!hot) return;
+
             const data = {
                 roadmap: hot.getData().map(row => ({
                     id: row[0],
@@ -108,20 +110,29 @@
                 
                 const container = document.getElementById('roadmapTable');
                 hot = new Handsontable(container, {
-                    data: data.roadmap,
+                    data: data.roadmap.map(item => [
+                        item.id,
+                        item.okr,
+                        item.kr,
+                        item.name,
+                        item.start,
+                        item.end,
+                        item.owner,
+                        item.metrics,
+                        item.status
+                    ]),
                     rowHeaders: true,
                     colHeaders: ['ID', 'OKR', 'KR', 'Название', 'Начало', 'Конец', 'Исполнитель', 'Метрики', 'Статус'],
                     columns: [
-                        { data: 'id', readOnly: true },
-                        { data: 'okr' },
-                        { data: 'kr' },
-                        { data: 'name' },
-                        { data: 'start', type: 'date' },
-                        { data: 'end', type: 'date' },
-                        { data: 'owner' },
-                        { data: 'metrics' },
+                        { readOnly: true },
+                        {},
+                        {},
+                        {},
+                        { type: 'date' },
+                        { type: 'date' },
+                        {},
+                        {},
                         { 
-                            data: 'status',
                             type: 'dropdown',
                             source: ['not-started', 'in-progress', 'completed']
                         }
