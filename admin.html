@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход в панель управления</title>
+    <title>Вход в систему</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -13,17 +13,21 @@
             max-width: 400px;
             margin: 100px auto;
             padding: 20px;
-            background: white;
+            background-color: white;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .error-message {
+            display: none;
+            color: red;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="login-container">
-            <h3 class="text-center mb-4">Вход в панель управления</h3>
-            <div id="error" class="alert alert-danger d-none"></div>
+            <h2 class="text-center mb-4">Вход в систему</h2>
             <form id="loginForm">
                 <div class="mb-3">
                     <label for="username" class="form-label">Логин</label>
@@ -33,28 +37,44 @@
                     <label for="password" class="form-label">Пароль</label>
                     <input type="password" class="form-control" id="password" required>
                 </div>
+                <div class="error-message" id="errorMessage">
+                    Неверный логин или пароль
+                </div>
                 <button type="submit" class="btn btn-primary w-100">Войти</button>
             </form>
         </div>
     </div>
 
+    <script src="auth.js"></script>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // Проверяем, не авторизован ли уже пользователь
+        if (localStorage.getItem('authToken')) {
+            const token = localStorage.getItem('authToken');
+            if (auth.verifyToken(token)) {
+                window.location.href = 'editor.html';
+            } else {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('isAuthenticated');
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
             
-            // Проверяем учетные данные
-            if (username === 'olegp' && password === '458555') {
-                // Сохраняем состояние авторизации
-                localStorage.setItem('isAuthenticated', 'true');
-                // Перенаправляем на страницу редактирования
-                window.location.href = 'editor.html';
-            } else {
-                const errorDiv = document.getElementById('error');
-                errorDiv.textContent = 'Неверный логин или пароль';
-                errorDiv.classList.remove('d-none');
+            try {
+                const success = await auth.login(username, password);
+                if (success) {
+                    window.location.href = 'editor.html';
+                } else {
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.style.display = 'block';
             }
         });
     </script>
