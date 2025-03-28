@@ -28,7 +28,7 @@
     </div>
 
     <script>
-        // Проверка авторизации
+        // Проверка авторизации при загрузке страницы
         if (!localStorage.getItem('isAuthenticated')) {
             window.location.href = 'admin.html';
         }
@@ -63,11 +63,6 @@
             
             hot.alter('insert_row', currentData.length, newRow);
         }
-
-        // Добавляем обработчик события для кнопки
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('addButton').addEventListener('click', addNewRow);
-        });
 
         // Функция сохранения данных
         function saveData() {
@@ -149,6 +144,9 @@
                         }
                     }
                 });
+
+                // Добавляем обработчик события для кнопки после инициализации таблицы
+                document.getElementById('addButton').addEventListener('click', addNewRow);
             })
             .catch(error => console.error('Error loading data:', error));
     </script>
