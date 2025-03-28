@@ -40,8 +40,11 @@
 
         // Функция создания новой строки
         function createNewRow() {
+            console.log('Creating new row...');
             const currentData = hot.getData();
-            return [
+            console.log('Current data:', currentData);
+            
+            const newRow = [
                 currentData.length + 1, // id
                 1, // okr
                 '1.1', // kr
@@ -52,6 +55,22 @@
                 '', // metrics
                 'not-started' // status
             ];
+            
+            console.log('New row data:', newRow);
+            return newRow;
+        }
+
+        // Функция добавления строки
+        function addRow(rowIndex) {
+            console.log('Adding row at index:', rowIndex);
+            try {
+                const newRow = createNewRow();
+                console.log('Attempting to insert row:', newRow);
+                hot.alter('insert_row', rowIndex, newRow);
+                console.log('Row inserted successfully');
+            } catch (error) {
+                console.error('Error adding row:', error);
+            }
         }
 
         // Функция сохранения данных
@@ -98,6 +117,8 @@
                     data = JSON.parse(savedData);
                 }
                 
+                console.log('Initial data:', data);
+                
                 const container = document.getElementById('roadmapTable');
                 hot = new Handsontable(container, {
                     data: data.roadmap.map(item => [
@@ -138,8 +159,7 @@
                                 },
                                 action: function() {
                                     const row = hot.getSelectedLast()[0];
-                                    const newRow = createNewRow();
-                                    hot.alter('insert_row', row, newRow);
+                                    addRow(row);
                                 }
                             },
                             'add_row_below': {
@@ -150,8 +170,7 @@
                                 },
                                 action: function() {
                                     const row = hot.getSelectedLast()[0];
-                                    const newRow = createNewRow();
-                                    hot.alter('insert_row', row + 1, newRow);
+                                    addRow(row + 1);
                                 }
                             },
                             'remove_row': {
@@ -196,10 +215,21 @@
                     },
                     afterChange: function(changes) {
                         if (changes) {
+                            console.log('Table changed:', changes);
                             saveData();
                         }
                     }
                 });
+
+                // Добавляем тестовую кнопку для отладки
+                const debugButton = document.createElement('button');
+                debugButton.className = 'btn btn-warning position-fixed bottom-0 end-0 m-3';
+                debugButton.textContent = 'Добавить строку (тест)';
+                debugButton.onclick = function() {
+                    console.log('Debug button clicked');
+                    addRow(hot.getData().length);
+                };
+                document.body.appendChild(debugButton);
             })
             .catch(error => console.error('Error loading data:', error));
     </script>
