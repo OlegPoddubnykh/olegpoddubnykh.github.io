@@ -137,9 +137,9 @@
                                     return false;
                                 },
                                 action: function() {
-                                    const row = this.getSelectedLast()[0];
+                                    const row = hot.getSelectedLast()[0];
                                     const newRow = createNewRow();
-                                    this.alter('insert_row', row, newRow);
+                                    hot.alter('insert_row', row, newRow);
                                 }
                             },
                             'add_row_below': {
@@ -149,9 +149,9 @@
                                     return false;
                                 },
                                 action: function() {
-                                    const row = this.getSelectedLast()[0];
+                                    const row = hot.getSelectedLast()[0];
                                     const newRow = createNewRow();
-                                    this.alter('insert_row', row + 1, newRow);
+                                    hot.alter('insert_row', row + 1, newRow);
                                 }
                             },
                             'remove_row': {
@@ -161,8 +161,8 @@
                                     return false;
                                 },
                                 action: function() {
-                                    const row = this.getSelectedLast()[0];
-                                    this.alter('remove_row', row);
+                                    const row = hot.getSelectedLast()[0];
+                                    hot.alter('remove_row', row);
                                 }
                             },
                             'duplicate_row': {
@@ -172,11 +172,11 @@
                                     return false;
                                 },
                                 action: function() {
-                                    const row = this.getSelectedLast()[0];
-                                    const rowData = this.getDataAtRow(row);
+                                    const row = hot.getSelectedLast()[0];
+                                    const rowData = hot.getDataAtRow(row);
                                     const newRow = [...rowData];
-                                    newRow[0] = this.getData().length + 1; // Новый ID
-                                    this.alter('insert_row', row + 1, newRow);
+                                    newRow[0] = hot.getData().length + 1; // Новый ID
+                                    hot.alter('insert_row', row + 1, newRow);
                                 }
                             },
                             'sep1': Handsontable.plugins.ContextMenu.SEPARATOR,
