@@ -43,18 +43,25 @@
 
         // Функция добавления новой строки
         function addNewRow() {
-            const newRow = {
-                id: hot.getData().length + 1,
-                okr: 1,
-                kr: '1.1',
-                name: 'Новая задача',
-                start: new Date().toISOString().split('T')[0],
-                end: new Date().toISOString().split('T')[0],
-                owner: '',
-                metrics: '',
-                status: 'not-started'
-            };
-            hot.alter('insert_row', hot.getData().length, newRow);
+            if (!hot) {
+                console.error('Table not initialized');
+                return;
+            }
+
+            const currentData = hot.getData();
+            const newRow = [
+                currentData.length + 1, // id
+                1, // okr
+                '1.1', // kr
+                'Новая задача', // name
+                new Date().toISOString().split('T')[0], // start
+                new Date().toISOString().split('T')[0], // end
+                '', // owner
+                '', // metrics
+                'not-started' // status
+            ];
+            
+            hot.alter('insert_row', currentData.length, newRow);
         }
 
         // Функция сохранения данных
