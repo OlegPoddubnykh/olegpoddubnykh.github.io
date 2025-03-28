@@ -49,32 +49,55 @@
     <script>
         // Проверяем, не авторизован ли уже пользователь
         async function checkExistingAuth() {
+            console.log('Checking existing auth...');
             if (localStorage.getItem('authToken')) {
+                console.log('Found existing token');
                 const token = localStorage.getItem('authToken');
-                if (await auth.verifyToken(token)) {
-                    window.location.href = 'editor.html';
-                } else {
+                try {
+                    const isValid = await auth.verifyToken(token);
+                    console.log('Token validity:', isValid);
+                    if (isValid) {
+                        console.log('Token is valid, redirecting to editor...');
+                        window.location.href = 'editor.html';
+                    } else {
+                        console.log('Token is invalid, clearing auth data...');
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('isAuthenticated');
+                    }
+                } catch (error) {
+                    console.error('Error verifying token:', error);
                     localStorage.removeItem('authToken');
                     localStorage.removeItem('isAuthenticated');
                 }
+            } else {
+                console.log('No existing token found');
             }
         }
 
         // Запускаем проверку при загрузке страницы
-        checkExistingAuth();
+        console.log('Page loaded, starting auth check...');
+        checkExistingAuth().catch(error => {
+            console.error('Error during initial auth check:', error);
+        });
 
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            console.log('Login form submitted');
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
             
             try {
+                console.log('Attempting login...');
                 const success = await auth.login(username, password);
+                console.log('Login result:', success);
+                
                 if (success) {
+                    console.log('Login successful, redirecting...');
                     window.location.href = 'editor.html';
                 } else {
+                    console.log('Login failed, showing error message');
                     errorMessage.style.display = 'block';
                 }
             } catch (error) {
