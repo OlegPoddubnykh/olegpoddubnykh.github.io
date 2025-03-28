@@ -21,6 +21,9 @@
                 <button onclick="logout()" class="btn btn-danger">Выйти</button>
             </div>
         </div>
+        <div class="mb-3">
+            <button onclick="addNewRow()" class="btn btn-primary">Добавить новую задачу</button>
+        </div>
         <div id="roadmapTable"></div>
     </div>
 
@@ -36,12 +39,68 @@
             window.location.href = 'admin.html';
         }
 
+        let hot; // Глобальная переменная для таблицы
+
+        // Функция добавления новой строки
+        function addNewRow() {
+            const newRow = {
+                id: hot.getData().length + 1,
+                okr: 1,
+                kr: '1.1',
+                name: 'Новая задача',
+                start: new Date().toISOString().split('T')[0],
+                end: new Date().toISOString().split('T')[0],
+                owner: '',
+                metrics: '',
+                status: 'not-started'
+            };
+            hot.alter('insert_row', hot.getData().length, newRow);
+        }
+
+        // Функция сохранения данных
+        function saveData() {
+            const data = {
+                roadmap: hot.getData().map(row => ({
+                    id: row[0],
+                    okr: row[1],
+                    kr: row[2],
+                    name: row[3],
+                    start: row[4],
+                    end: row[5],
+                    owner: row[6],
+                    metrics: row[7],
+                    status: row[8]
+                }))
+            };
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('roadmapData', JSON.stringify(data));
+            
+            // Показываем уведомление об успешном сохранении
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-success position-fixed top-0 end-0 m-3';
+            notification.style.zIndex = '1000';
+            notification.textContent = 'Данные сохранены';
+            document.body.appendChild(notification);
+            
+            // Удаляем уведомление через 2 секунды
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
         // Загрузка данных
         fetch('roadmap-data.json')
             .then(response => response.json())
             .then(data => {
+                // Проверяем, есть ли сохраненные данные в localStorage
+                const savedData = localStorage.getItem('roadmapData');
+                if (savedData) {
+                    data = JSON.parse(savedData);
+                }
+                
                 const container = document.getElementById('roadmapTable');
-                const hot = new Handsontable(container, {
+                hot = new Handsontable(container, {
                     data: data.roadmap,
                     rowHeaders: true,
                     colHeaders: ['ID', 'OKR', 'KR', 'Название', 'Начало', 'Конец', 'Исполнитель', 'Метрики', 'Статус'],
@@ -63,21 +122,7 @@
                     licenseKey: 'non-commercial-and-evaluation',
                     afterChange: function(changes) {
                         if (changes) {
-                            // Сохраняем изменения в localStorage
-                            const updatedData = this.getData();
-                            localStorage.setItem('roadmapData', JSON.stringify({
-                                roadmap: updatedData.map(row => ({
-                                    id: row[0],
-                                    okr: row[1],
-                                    kr: row[2],
-                                    name: row[3],
-                                    start: row[4],
-                                    end: row[5],
-                                    owner: row[6],
-                                    metrics: row[7],
-                                    status: row[8]
-                                }))
-                            }));
+                            saveData();
                         }
                     }
                 });
