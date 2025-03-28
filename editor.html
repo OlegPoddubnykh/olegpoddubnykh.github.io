@@ -64,9 +64,15 @@
         function addRow(rowIndex) {
             console.log('Adding row at index:', rowIndex);
             try {
+                const currentData = hot.getData();
                 const newRow = createNewRow();
                 console.log('Attempting to insert row:', newRow);
-                hot.alter('insert_row_below', rowIndex - 1, newRow);
+                
+                // Добавляем новую строку в массив данных
+                currentData.splice(rowIndex, 0, newRow);
+                
+                // Обновляем данные таблицы
+                hot.loadData(currentData);
                 console.log('Row inserted successfully');
             } catch (error) {
                 console.error('Error adding row:', error);
@@ -159,8 +165,10 @@
                                 },
                                 action: function() {
                                     const row = hot.getSelectedLast()[0];
+                                    const currentData = hot.getData();
                                     const newRow = createNewRow();
-                                    hot.alter('insert_row_above', row, newRow);
+                                    currentData.splice(row, 0, newRow);
+                                    hot.loadData(currentData);
                                 }
                             },
                             'add_row_below': {
@@ -171,8 +179,10 @@
                                 },
                                 action: function() {
                                     const row = hot.getSelectedLast()[0];
+                                    const currentData = hot.getData();
                                     const newRow = createNewRow();
-                                    hot.alter('insert_row_below', row, newRow);
+                                    currentData.splice(row + 1, 0, newRow);
+                                    hot.loadData(currentData);
                                 }
                             },
                             'remove_row': {
@@ -183,7 +193,9 @@
                                 },
                                 action: function() {
                                     const row = hot.getSelectedLast()[0];
-                                    hot.alter('remove_row', row);
+                                    const currentData = hot.getData();
+                                    currentData.splice(row, 1);
+                                    hot.loadData(currentData);
                                 }
                             },
                             'duplicate_row': {
@@ -194,10 +206,12 @@
                                 },
                                 action: function() {
                                     const row = hot.getSelectedLast()[0];
-                                    const rowData = hot.getDataAtRow(row);
+                                    const currentData = hot.getData();
+                                    const rowData = currentData[row];
                                     const newRow = [...rowData];
-                                    newRow[0] = hot.getData().length + 1; // Новый ID
-                                    hot.alter('insert_row_below', row, newRow);
+                                    newRow[0] = currentData.length + 1; // Новый ID
+                                    currentData.splice(row + 1, 0, newRow);
+                                    hot.loadData(currentData);
                                 }
                             },
                             'sep1': Handsontable.plugins.ContextMenu.SEPARATOR,
