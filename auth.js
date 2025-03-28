@@ -20,21 +20,28 @@ function checkAuth() {
 }
 
 // Функция для входа
-function login(username, password) {
-    // Хешируем введенный пароль
-    const hashedPassword = sha256(password);
-    
-    if (username === config.credentials.username && 
-        hashedPassword === config.credentials.passwordHash) {
+async function login(username, password) {
+    try {
+        // Хешируем введенный пароль
+        const hashedPassword = await sha256(password);
+        console.log('Hashed password:', hashedPassword);
+        console.log('Expected hash:', config.credentials.passwordHash);
         
-        // Создаем JWT токен
-        const token = generateToken(username);
-        localStorage.setItem('authToken', token);
-        localStorage.setItem('isAuthenticated', 'true');
-        
-        return true;
+        if (username === config.credentials.username && 
+            hashedPassword === config.credentials.passwordHash) {
+            
+            // Создаем JWT токен
+            const token = await generateToken(username);
+            localStorage.setItem('authToken', token);
+            localStorage.setItem('isAuthenticated', 'true');
+            
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('Login error:', error);
+        return false;
     }
-    return false;
 }
 
 // Функция для выхода
@@ -45,7 +52,7 @@ function logout() {
 }
 
 // Функция для генерации JWT токена
-function generateToken(username) {
+async function generateToken(username) {
     const header = {
         "alg": "HS256",
         "typ": "JWT"
@@ -60,13 +67,13 @@ function generateToken(username) {
     const encodedHeader = btoa(JSON.stringify(header));
     const encodedPayload = btoa(JSON.stringify(payload));
     
-    const signature = sha256(encodedHeader + "." + encodedPayload + "." + config.secretKey);
+    const signature = await sha256(encodedHeader + "." + encodedPayload + "." + config.secretKey);
     
     return encodedHeader + "." + encodedPayload + "." + signature;
 }
 
 // Функция для проверки JWT токена
-function verifyToken(token) {
+async function verifyToken(token) {
     try {
         const [header, payload, signature] = token.split('.');
         const decodedPayload = JSON.parse(atob(payload));
@@ -77,7 +84,7 @@ function verifyToken(token) {
         }
         
         // Проверяем подпись
-        const expectedSignature = sha256(header + "." + payload + "." + config.secretKey);
+        const expectedSignature = await sha256(header + "." + payload + "." + config.secretKey);
         return signature === expectedSignature;
     } catch (error) {
         return false;

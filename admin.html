@@ -48,15 +48,20 @@
     <script src="auth.js"></script>
     <script>
         // Проверяем, не авторизован ли уже пользователь
-        if (localStorage.getItem('authToken')) {
-            const token = localStorage.getItem('authToken');
-            if (auth.verifyToken(token)) {
-                window.location.href = 'editor.html';
-            } else {
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('isAuthenticated');
+        async function checkExistingAuth() {
+            if (localStorage.getItem('authToken')) {
+                const token = localStorage.getItem('authToken');
+                if (await auth.verifyToken(token)) {
+                    window.location.href = 'editor.html';
+                } else {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('isAuthenticated');
+                }
             }
         }
+
+        // Запускаем проверку при загрузке страницы
+        checkExistingAuth();
 
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();

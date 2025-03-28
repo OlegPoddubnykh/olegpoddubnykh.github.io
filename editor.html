@@ -27,9 +27,14 @@
 
     <script>
         // Проверка авторизации при загрузке страницы
-        if (!localStorage.getItem('authToken') || !auth.verifyToken(localStorage.getItem('authToken'))) {
-            window.location.href = 'admin.html';
+        async function checkAuth() {
+            if (!localStorage.getItem('authToken') || !(await auth.verifyToken(localStorage.getItem('authToken')))) {
+                window.location.href = 'admin.html';
+            }
         }
+
+        // Запускаем проверку при загрузке страницы
+        checkAuth();
 
         // Функция выхода
         function logout() {
