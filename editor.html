@@ -21,9 +21,6 @@
                 <button onclick="logout()" class="btn btn-danger">Выйти</button>
             </div>
         </div>
-        <div class="mb-3">
-            <button id="addButton" class="btn btn-primary">Добавить новую задачу</button>
-        </div>
         <div id="roadmapTable"></div>
     </div>
 
@@ -41,15 +38,10 @@
 
         let hot; // Глобальная переменная для таблицы
 
-        // Функция добавления новой строки
-        function addNewRow() {
-            if (!hot) {
-                console.error('Table not initialized');
-                return;
-            }
-
+        // Функция создания новой строки
+        function createNewRow() {
             const currentData = hot.getData();
-            const newRow = [
+            return [
                 currentData.length + 1, // id
                 1, // okr
                 '1.1', // kr
@@ -60,8 +52,6 @@
                 '', // metrics
                 'not-started' // status
             ];
-            
-            hot.alter('insert_row', currentData.length, newRow);
         }
 
         // Функция сохранения данных
@@ -145,6 +135,11 @@
                                 key: 'add_row_above',
                                 disabled: function() {
                                     return false;
+                                },
+                                action: function() {
+                                    const row = this.getSelectedLast()[0];
+                                    const newRow = createNewRow();
+                                    this.alter('insert_row', row, newRow);
                                 }
                             },
                             'add_row_below': {
@@ -152,6 +147,11 @@
                                 key: 'add_row_below',
                                 disabled: function() {
                                     return false;
+                                },
+                                action: function() {
+                                    const row = this.getSelectedLast()[0];
+                                    const newRow = createNewRow();
+                                    this.alter('insert_row', row + 1, newRow);
                                 }
                             },
                             'remove_row': {
@@ -159,6 +159,10 @@
                                 key: 'remove_row',
                                 disabled: function() {
                                     return false;
+                                },
+                                action: function() {
+                                    const row = this.getSelectedLast()[0];
+                                    this.alter('remove_row', row);
                                 }
                             },
                             'duplicate_row': {
@@ -166,6 +170,13 @@
                                 key: 'duplicate_row',
                                 disabled: function() {
                                     return false;
+                                },
+                                action: function() {
+                                    const row = this.getSelectedLast()[0];
+                                    const rowData = this.getDataAtRow(row);
+                                    const newRow = [...rowData];
+                                    newRow[0] = this.getData().length + 1; // Новый ID
+                                    this.alter('insert_row', row + 1, newRow);
                                 }
                             },
                             'sep1': Handsontable.plugins.ContextMenu.SEPARATOR,
@@ -189,9 +200,6 @@
                         }
                     }
                 });
-
-                // Добавляем обработчик события для кнопки после инициализации таблицы
-                document.getElementById('addButton').addEventListener('click', addNewRow);
             })
             .catch(error => console.error('Error loading data:', error));
     </script>
