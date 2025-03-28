@@ -5,7 +5,7 @@ const config = {
     credentials: {
         username: 'olegp',
         // Хеш пароля 458555
-        passwordHash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'
+        passwordHash: '9c7b8a341dd477eebe11dce4e2a70446f700f59d3177d22d237cb6b58f920be3'
     }
 };
 
