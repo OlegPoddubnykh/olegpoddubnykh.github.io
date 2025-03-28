@@ -15,17 +15,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'update':
                 $index = $_POST['index'];
                 $data['roadmap'][$index] = [
-                    'date' => $_POST['date'],
-                    'title' => $_POST['title'],
-                    'description' => $_POST['description'],
+                    'id' => $_POST['id'],
+                    'okr' => $_POST['okr'],
+                    'kr' => $_POST['kr'],
+                    'name' => $_POST['name'],
+                    'start' => $_POST['start'],
+                    'end' => $_POST['end'],
+                    'owner' => $_POST['owner'],
+                    'metrics' => $_POST['metrics'],
                     'status' => $_POST['status']
                 ];
                 break;
             case 'add':
                 $data['roadmap'][] = [
-                    'date' => $_POST['date'],
-                    'title' => $_POST['title'],
-                    'description' => $_POST['description'],
+                    'id' => count($data['roadmap']) + 1,
+                    'okr' => $_POST['okr'],
+                    'kr' => $_POST['kr'],
+                    'name' => $_POST['name'],
+                    'start' => $_POST['start'],
+                    'end' => $_POST['end'],
+                    'owner' => $_POST['owner'],
+                    'metrics' => $_POST['metrics'],
                     'status' => $_POST['status']
                 ];
                 break;
@@ -55,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>Управление Roadmap</h1>
             <div>
-                <a href="roadmap.html" class="btn btn-secondary me-2">Просмотр Roadmap</a>
+                <a href="roadmap2.html" class="btn btn-secondary me-2">Просмотр Roadmap</a>
                 <a href="?logout=1" class="btn btn-danger">Выйти</a>
             </div>
         </div>
@@ -70,15 +80,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const hot = new Handsontable(container, {
             data: data,
             rowHeaders: true,
-            colHeaders: ['Дата', 'Название', 'Описание', 'Статус'],
+            colHeaders: ['ID', 'OKR', 'KR', 'Название', 'Начало', 'Конец', 'Исполнитель', 'Метрики', 'Статус'],
             columns: [
-                { data: 'date' },
-                { data: 'title' },
-                { data: 'description' },
+                { data: 'id', readOnly: true },
+                { data: 'okr' },
+                { data: 'kr' },
+                { data: 'name' },
+                { data: 'start', type: 'date' },
+                { data: 'end', type: 'date' },
+                { data: 'owner' },
+                { data: 'metrics' },
                 { 
                     data: 'status',
                     type: 'dropdown',
-                    source: ['В процессе', 'Запланировано', 'Завершено']
+                    source: ['not-started', 'in-progress', 'completed']
                 }
             ],
             licenseKey: 'non-commercial-and-evaluation',
@@ -95,9 +110,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         body: new URLSearchParams({
                             'action': 'update',
                             'index': row,
-                            'date': data.date,
-                            'title': data.title,
-                            'description': data.description,
+                            'id': data.id,
+                            'okr': data.okr,
+                            'kr': data.kr,
+                            'name': data.name,
+                            'start': data.start,
+                            'end': data.end,
+                            'owner': data.owner,
+                            'metrics': data.metrics,
                             'status': data.status
                         })
                     });

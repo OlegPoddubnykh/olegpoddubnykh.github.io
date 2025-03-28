@@ -67,22 +67,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        #adminButton {
-            background-color: var(--okr1);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        #adminButton:hover {
-            background-color: #c0392b;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
-        }
-
         button.active {
             background-color: var(--text);
             color: white;
@@ -349,6 +333,7 @@
                     <option value="q4">Q4 2025</option>
                 </select>
                 <button id="toggleView" title="Переключить вид">Квартально</button>
+                <button id="adminButton" class="btn btn-primary" onclick="window.location.href='login.php'">Редактировать</button>
             </div>
         </div>
 
@@ -408,316 +393,17 @@
     <div class="tooltip" id="tooltip"></div>
 
 <script>
-const tasks = [
-    {
-        id: 1,
-        okr: 1,
-        kr: '1.1',
-        name: 'Настроить Roistat и CRM (сквозная аналитика, CPL/CAC)',
-        start: '2025-05-01',
-        end: '2025-05-31',
-        owner: 'Олег Поддубных',
-        metrics: 'CAC: ~120k → ≤80k, Новый MRR ~300k → 600k',
-        status: 'not-started'
-    },
-    {
-        id: 2,
-        okr: 1,
-        kr: '1.1',
-        name: 'Прописать скрипты ABM (цепочки писем и звонков) + АНАЛИТИКА, ОТЧЕТНОСТЬ',
-        start: '2025-05-01',
-        end: '2025-05-31',
-        owner: 'Степан Соловьев, Олег Поддубных',
-        metrics: '3 цепочки (мед, EdTech, +1)',
-        status: 'not-started'
-    },
-    {
-        id: 3,
-        okr: 1,
-        kr: '1.1',
-        name: 'Собрать базу для ABM (мед, EdTech), 100-200 компаний на отрасль',
-        start: '2025-05-01',
-        end: '2025-06-15',
-        owner: 'Степан Соловьев',
-        metrics: '100 компаний в CRM',
-        status: 'not-started'
-    },
-    {
-        id: 4,
-        okr: 1,
-        kr: '1.1',
-        name: 'Найти email рассылки для участия (5 разных)',
-        start: '2025-05-15',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, Даниил Вировлянский, Степан Соловьев',
-        metrics: '5 рассылок',
-        status: 'not-started'
-    },
-    {
-        id: 5,
-        okr: 1,
-        kr: '1.1',
-        name: 'Таргетированная реклама (кейсы)',
-        start: '2025-04-30',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, подрядчик',
-        metrics: 'CAC ≤80k',
-        status: 'in-progress'
-    },
-    {
-        id: 6,
-        okr: 1,
-        kr: '1.1',
-        name: 'Настройка рекламных кампаний (контекст + медийка)',
-        start: '2025-04-15',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, подрядчик',
-        metrics: 'CAC ≤80k',
-        status: 'in-progress'
-    },
-    {
-        id: 7,
-        okr: 1,
-        kr: '1.1',
-        name: 'SEO',
-        start: '2025-04-15',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, подрядчик',
-        metrics: 'CAC ≤80k',
-        status: 'in-progress'
-    },
-    {
-        id: 8,
-        okr: 1,
-        kr: '1.1',
-        name: 'Участие в конференциях и выставках',
-        start: '2025-07-01',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, Тамара Мирзоян',
-        metrics: '15 мероприятий, CAC ≤200k',
-        status: 'not-started'
-    },
-    {
-        id: 9,
-        okr: 1,
-        kr: '1.2',
-        name: 'Лендинг под 2 индустрии (мед, EdTech)',
-        start: '2025-05-01',
-        end: '2025-05-30',
-        owner: 'Олег Поддубных, Юлия Устькачкинцева',
-        metrics: '2 лендинга',
-        status: 'not-started'
-    },
-    {
-        id: 10,
-        okr: 1,
-        kr: '1.2',
-        name: 'Офферы для upsell',
-        start: '2025-05-15',
-        end: '2025-05-30',
-        owner: 'Тамара Мирзоян',
-        metrics: 'Воронка допродаж',
-        status: 'not-started'
-    },
-    {
-        id: 11,
-        okr: 1,
-        kr: '1.2',
-        name: 'Написание кейсов (Фомина, Lerna)',
-        start: '2025-06-01',
-        end: '2025-06-15',
-        owner: 'Олег Поддубных, Виктория Колесникова, Анастасия Купцова',
-        metrics: '2 кейса',
-        status: 'not-started'
-    },
-    {
-        id: 12,
-        okr: 1,
-        kr: '1.2',
-        name: 'Отчеты и аккаунт-менеджмент',
-        start: '2025-04-30',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, Виктория Колесникова',
-        metrics: 'Отток ≤300k',
-        status: 'in-progress'
-    },
-    {
-        id: 13,
-        okr: 2,
-        kr: '2.2',
-        name: 'Готовые словари и гайды',
-        start: '2025-07-01',
-        end: '2025-07-31',
-        owner: 'Олег Поддубных, Анастасия Соколова',
-        metrics: 'Онбординг 14 дней',
-        status: 'not-started'
-    },
-    {
-        id: 14,
-        okr: 2,
-        kr: '2.3',
-        name: 'Рефакторинг главной страницы',
-        start: '2025-05-15',
-        end: '2025-05-30',
-        owner: 'Олег Поддубных, Тамара Мирзоян, подрядчик',
-        metrics: 'CR +2-3%',
-        status: 'not-started'
-    },
-    {
-        id: 15,
-        okr: 2,
-        kr: '2.3',
-        name: 'Изучение бизнес-метрик клиентов',
-        start: '2025-07-01',
-        end: '2025-07-15',
-        owner: 'Олег Поддубных, Тамара Мирзоян, Виктория Колесникова',
-        metrics: 'CAC ≤80k',
-        status: 'not-started'
-    },
-    {
-        id: 16,
-        okr: 3,
-        kr: '3.1',
-        name: 'Публикации в СМИ',
-        start: '2025-09-01',
-        end: '2025-11-30',
-        owner: 'Олег Поддубных, Тамара Мирзоян',
-        metrics: '8 публикаций',
-        status: 'not-started'
-    },
-    {
-        id: 17,
-        okr: 3,
-        kr: '3.1',
-        name: 'Настройка сбора запросов',
-        start: '2025-05-01',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, Тамара Мирзоян',
-        metrics: 'Система сбора',
-        status: 'not-started'
-    },
-    {
-        id: 18,
-        okr: 3,
-        kr: '3.2',
-        name: 'Создание кейсов (видео/текст)',
-        start: '2025-09-01',
-        end: '2025-09-15',
-        owner: 'Контент, Видеограф, Вячеслав Шульга',
-        metrics: '5-6 кейсов',
-        status: 'not-started'
-    },
-    {
-        id: 19,
-        okr: 3,
-        kr: '3.3',
-        name: 'Telegram-канал',
-        start: '2025-07-01',
-        end: '2025-07-15',
-        owner: 'Тамара Мирзоян, Консультант (X)',
-        metrics: '+30% трафика',
-        status: 'not-started'
-    },
-    {
-        id: 20,
-        okr: 3,
-        kr: '3.3',
-        name: 'Масштабное исследование',
-        start: '2025-08-01',
-        end: '2025-08-15',
-        owner: 'Олег Поддубных, Анастасия Соколова, Тамара Мирзоян',
-        metrics: 'Аналитический отчет',
-        status: 'not-started'
-    },
-    {
-        id: 21,
-        okr: 3,
-        kr: '3.3',
-        name: 'Участие в рейтингах',
-        start: '2025-06-01',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, Тамара Мирзоян',
-        metrics: '3 награды',
-        status: 'not-started'
-    },
-    {
-        id: 22,
-        okr: 3,
-        kr: '3.3',
-        name: 'Эдтех-проекты как авторы',
-        start: '2025-07-01',
-        end: '2025-07-15',
-        owner: 'Тамара Мирзоян, Анастасия Соколова',
-        metrics: '3 проекта',
-        status: 'not-started'
-    },
-    {
-        id: 23,
-        okr: 3,
-        kr: '3.3',
-        name: 'Методичка SPEECH',
-        start: '2025-07-01',
-        end: '2025-07-15',
-        owner: 'Олег Поддубных, Тамара Мирзоян',
-        metrics: 'Готовая методичка',
-        status: 'not-started'
-    },
-    {
-        id: 24,
-        okr: 4,
-        kr: '4.1',
-        name: 'Управление процессами',
-        start: '2025-05-01',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, Виктория Колесникова, Анастасия Купцова, Анастасия Соколова, Технический тимлид',
-        metrics: 'Дашборд метрик',
-        status: 'not-started'
-    },
-    {
-        id: 25,
-        okr: 4,
-        kr: '4.2',
-        name: 'Интеграции с CRM',
-        start: '2025-08-01',
-        end: '2025-12-31',
-        owner: 'Технический тимлид, Анастасия Соколова, Олег Поддубных',
-        metrics: '5 интеграций',
-        status: 'not-started'
-    },
-    {
-        id: 26,
-        okr: 4,
-        kr: '4.3',
-        name: 'Email-рассылки и вебинары',
-        start: '2025-05-01',
-        end: '2025-12-31',
-        owner: 'Виктория Колесникова, Тамара Мирзоян, Контент',
-        metrics: 'Открываемость >30%',
-        status: 'not-started'
-    },
-    {
-        id: 27,
-        okr: 4,
-        kr: '4.4',
-        name: 'Сбор обратной связи (NPS)',
-        start: '2025-05-01',
-        end: '2025-12-31',
-        owner: 'Виктория Колесникова, Тамара Мирзоян',
-        metrics: 'NPS +8',
-        status: 'not-started'
-    },
-    {
-        id: 28,
-        okr: 4,
-        kr: '4.5',
-        name: 'Формирование контент-отдела',
-        start: '2025-07-01',
-        end: '2025-12-31',
-        owner: 'Олег Поддубных, HR',
-        metrics: '2 сотрудника',
-        status: 'not-started'
+// Загрузка данных из JSON файла
+async function loadTasks() {
+    try {
+        const response = await fetch('roadmap-data.json');
+        const data = await response.json();
+        return data.roadmap;
+    } catch (error) {
+        console.error('Error loading tasks:', error);
+        return [];
     }
-];
+}
 
 // Настройка отображения
 let currentView = 'monthly'; // monthly или quarterly
@@ -735,7 +421,7 @@ function getCurrentDateFor2025Demo() {
 }
 
 // Обновление статусов задач на основе текущей даты
-function updateTaskStatuses() {
+function updateTaskStatuses(tasks) {
     const today = getCurrentDateFor2025Demo();
     
     tasks.forEach(task => {
@@ -753,7 +439,7 @@ function updateTaskStatuses() {
 }
 
 // Генерация статистики по сотрудникам
-function generateStaffStats() {
+function generateStaffStats(tasks) {
     const today = getCurrentDateFor2025Demo();
     const staffStatsContainer = document.getElementById('staffStats');
     staffStatsContainer.innerHTML = '';
@@ -829,7 +515,7 @@ function generateStaffStats() {
 }
 
 // Заполнение списка исполнителей с обработкой имен
-function populateOwnerFilter() {
+function populateOwnerFilter(tasks) {
     const ownerFilter = document.getElementById('ownerFilter');
     const owners = new Set();
     
@@ -863,7 +549,7 @@ function populateOwnerFilter() {
 }
 
 // Обновление отображения статистики
-function updateStats() {
+function updateStats(tasks) {
     const today = getCurrentDateFor2025Demo();
     
     // Получаем только отфильтрованные задачи
@@ -897,7 +583,7 @@ function updateStats() {
 }
 
 // Рендеринг диаграммы Ганта
-function renderGantt() {
+function renderGantt(tasks) {
     const okrFilter = document.getElementById('okrFilter').value;
     const ownerFilter = document.getElementById('ownerFilter').value;
     const periodFilter = document.getElementById('periodFilter').value;
@@ -1066,7 +752,7 @@ function renderGantt() {
     });
     
     // Обновление статистики
-    updateStats();
+    updateStats(tasks);
 }
 
 // Вспомогательные функции
@@ -1123,18 +809,24 @@ function setupDragToScroll() {
 
 // Обработчики событий
 document.getElementById('okrFilter').addEventListener('change', () => {
-    renderGantt();
-    generateStaffStats();
+    loadTasks().then(tasks => {
+        renderGantt(tasks);
+        generateStaffStats(tasks);
+    });
 });
 
 document.getElementById('ownerFilter').addEventListener('change', () => {
-    renderGantt();
-    generateStaffStats();
+    loadTasks().then(tasks => {
+        renderGantt(tasks);
+        generateStaffStats(tasks);
+    });
 });
 
 document.getElementById('periodFilter').addEventListener('change', () => {
-    renderGantt();
-    generateStaffStats();
+    loadTasks().then(tasks => {
+        renderGantt(tasks);
+        generateStaffStats(tasks);
+    });
 });
 
 document.getElementById('toggleView').addEventListener('click', function() {
@@ -1146,7 +838,7 @@ document.getElementById('toggleView').addEventListener('click', function() {
         this.textContent = 'Квартально';
     }
     this.classList.toggle('active');
-    renderGantt();
+    loadTasks().then(tasks => renderGantt(tasks));
 });
 
 // Фильтрация по клику на легенду
@@ -1172,36 +864,41 @@ document.querySelectorAll('.legend-item').forEach(item => {
             });
         }
         
-        renderGantt();
-        generateStaffStats();
+        loadTasks().then(tasks => {
+            renderGantt(tasks);
+            generateStaffStats(tasks);
+        });
     });
 });
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
-    // Обновляем статусы задач на основе текущей даты
-    updateTaskStatuses();
-    
-    // Получаем сегодняшнюю дату 2025 года для отображения
-    const today = getCurrentDateFor2025Demo();
-    
-    // Добавляем информацию о текущей дате в заголовок
-    const dateInfo = document.createElement('div');
-    dateInfo.className = 'current-date-info';
-    dateInfo.innerHTML = `
-        <div style="margin-top: 10px; font-size: 0.9em; color: #777;">
-            Текущая дата: <strong>${formatDate(today)}</strong>
-        </div>
-    `;
-    document.querySelector('.title').appendChild(dateInfo);
-    
     // Настраиваем перетаскивание графика
     setupDragToScroll();
     
-    // Инициализируем страницу
-    populateOwnerFilter();
-    renderGantt();
-    generateStaffStats();
+    // Загружаем данные и инициализируем страницу
+    loadTasks().then(tasks => {
+        // Обновляем статусы задач на основе текущей даты
+        updateTaskStatuses(tasks);
+        
+        // Получаем сегодняшнюю дату 2025 года для отображения
+        const today = getCurrentDateFor2025Demo();
+        
+        // Добавляем информацию о текущей дате в заголовок
+        const dateInfo = document.createElement('div');
+        dateInfo.className = 'current-date-info';
+        dateInfo.innerHTML = `
+            <div style="margin-top: 10px; font-size: 0.9em; color: #777;">
+                Текущая дата: <strong>${formatDate(today)}</strong>
+            </div>
+        `;
+        document.querySelector('.title').appendChild(dateInfo);
+        
+        // Инициализируем страницу
+        populateOwnerFilter(tasks);
+        renderGantt(tasks);
+        generateStaffStats(tasks);
+    });
 });
 </script>
 </body>
