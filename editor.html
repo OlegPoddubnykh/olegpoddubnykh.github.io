@@ -66,7 +66,7 @@
             try {
                 const newRow = createNewRow();
                 console.log('Attempting to insert row:', newRow);
-                hot.alter('insert_row', rowIndex, newRow);
+                hot.alter('insert_row_below', rowIndex - 1, newRow);
                 console.log('Row inserted successfully');
             } catch (error) {
                 console.error('Error adding row:', error);
@@ -159,7 +159,8 @@
                                 },
                                 action: function() {
                                     const row = hot.getSelectedLast()[0];
-                                    addRow(row);
+                                    const newRow = createNewRow();
+                                    hot.alter('insert_row_above', row, newRow);
                                 }
                             },
                             'add_row_below': {
@@ -170,7 +171,8 @@
                                 },
                                 action: function() {
                                     const row = hot.getSelectedLast()[0];
-                                    addRow(row + 1);
+                                    const newRow = createNewRow();
+                                    hot.alter('insert_row_below', row, newRow);
                                 }
                             },
                             'remove_row': {
@@ -195,7 +197,7 @@
                                     const rowData = hot.getDataAtRow(row);
                                     const newRow = [...rowData];
                                     newRow[0] = hot.getData().length + 1; // Новый ID
-                                    hot.alter('insert_row', row + 1, newRow);
+                                    hot.alter('insert_row_below', row, newRow);
                                 }
                             },
                             'sep1': Handsontable.plugins.ContextMenu.SEPARATOR,
