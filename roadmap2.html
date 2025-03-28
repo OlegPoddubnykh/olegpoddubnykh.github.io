@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imot.io Marketing Roadmap 2025</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --okr1: #e74c3c;
@@ -65,6 +66,22 @@
         select:hover, button:hover {
             border-color: var(--okr1);
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        #adminButton {
+            background-color: var(--okr1);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        #adminButton:hover {
+            background-color: #c0392b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
         }
 
         button.active {
@@ -333,7 +350,7 @@
                     <option value="q4">Q4 2025</option>
                 </select>
                 <button id="toggleView" title="Переключить вид">Квартально</button>
-                <button id="adminButton" class="btn btn-primary" onclick="window.location.href='login.php'">Редактировать</button>
+                <button id="adminButton" onclick="window.location.href='login.php'">Редактировать</button>
             </div>
         </div>
 
