@@ -350,7 +350,7 @@
                     <option value="q4">Q4 2025</option>
                 </select>
                 <button id="toggleView" title="Переключить вид">Квартально</button>
-                <button id="adminButton" onclick="window.location.href='login.php'">Редактировать</button>
+                <button id="adminButton">Редактировать</button>
             </div>
         </div>
 
@@ -890,6 +890,11 @@ document.querySelectorAll('.legend-item').forEach(item => {
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
+    // Добавляем обработчик для кнопки администратора
+    document.getElementById('adminButton').addEventListener('click', function() {
+        window.location.href = 'login.php';
+    });
+    
     // Настраиваем перетаскивание графика
     setupDragToScroll();
     
