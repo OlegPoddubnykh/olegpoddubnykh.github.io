@@ -38,19 +38,34 @@
 
         let hot; // Глобальная переменная для таблицы
 
+        // Функция конвертации даты из формата DD/MM/YYYY в YYYY-MM-DD
+        function convertDateToISO(dateStr) {
+            if (!dateStr) return '';
+            const [day, month, year] = dateStr.split('/');
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        }
+
+        // Функция конвертации даты из формата YYYY-MM-DD в DD/MM/YYYY
+        function convertDateToDisplay(dateStr) {
+            if (!dateStr) return '';
+            const [year, month, day] = dateStr.split('-');
+            return `${day}/${month}/${year}`;
+        }
+
         // Функция создания новой строки
         function createNewRow() {
             console.log('Creating new row...');
             const currentData = hot.getData();
             console.log('Current data:', currentData);
             
+            const today = new Date().toISOString().split('T')[0];
             const newRow = [
                 currentData.length + 1, // id
                 1, // okr
                 '1.1', // kr
                 'Новая задача', // name
-                new Date().toISOString().split('T')[0], // start
-                new Date().toISOString().split('T')[0], // end
+                today, // start
+                today, // end
                 '', // owner
                 '', // metrics
                 'not-started' // status
@@ -89,8 +104,8 @@
                     okr: row[1],
                     kr: row[2],
                     name: row[3],
-                    start: row[4],
-                    end: row[5],
+                    start: convertDateToISO(row[4]),
+                    end: convertDateToISO(row[5]),
                     owner: row[6],
                     metrics: row[7],
                     status: row[8]
@@ -132,8 +147,8 @@
                         item.okr,
                         item.kr,
                         item.name,
-                        item.start,
-                        item.end,
+                        convertDateToDisplay(item.start),
+                        convertDateToDisplay(item.end),
                         item.owner,
                         item.metrics,
                         item.status
@@ -145,8 +160,24 @@
                         {},
                         {},
                         {},
-                        { type: 'date' },
-                        { type: 'date' },
+                        { 
+                            type: 'date',
+                            dateFormat: 'DD/MM/YYYY',
+                            correctFormat: true,
+                            defaultDate: new Date().toISOString().split('T')[0],
+                            datePickerConfig: {
+                                format: 'DD/MM/YYYY'
+                            }
+                        },
+                        { 
+                            type: 'date',
+                            dateFormat: 'DD/MM/YYYY',
+                            correctFormat: true,
+                            defaultDate: new Date().toISOString().split('T')[0],
+                            datePickerConfig: {
+                                format: 'DD/MM/YYYY'
+                            }
+                        },
                         {},
                         {},
                         { 
