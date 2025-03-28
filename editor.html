@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="mb-3">
-            <button onclick="addNewRow()" class="btn btn-primary">Добавить новую задачу</button>
+            <button id="addButton" class="btn btn-primary">Добавить новую задачу</button>
         </div>
         <div id="roadmapTable"></div>
     </div>
@@ -63,6 +63,11 @@
             
             hot.alter('insert_row', currentData.length, newRow);
         }
+
+        // Добавляем обработчик события для кнопки
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('addButton').addEventListener('click', addNewRow);
+        });
 
         // Функция сохранения данных
         function saveData() {
