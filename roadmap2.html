@@ -410,6 +410,8 @@
     <div class="tooltip" id="tooltip"></div>
 
 <script>
+let tasks = []; // Добавляем глобальную переменную для задач
+
 // Загрузка данных
 fetch('roadmap-data.json')
     .then(response => response.json())
@@ -420,8 +422,12 @@ fetch('roadmap-data.json')
             data = JSON.parse(savedData);
         }
         tasks = data.roadmap;
-        renderGantt();
-        generateStaffStats();
+        // Обновляем статусы задач на основе текущей даты
+        updateTaskStatuses(tasks);
+        // Инициализируем страницу
+        populateOwnerFilter(tasks);
+        renderGantt(tasks);
+        generateStaffStats(tasks);
     })
     .catch(error => console.error('Error loading data:', error));
 
@@ -829,24 +835,18 @@ function setupDragToScroll() {
 
 // Обработчики событий
 document.getElementById('okrFilter').addEventListener('change', () => {
-    loadTasks().then(tasks => {
-        renderGantt(tasks);
-        generateStaffStats(tasks);
-    });
+    renderGantt(tasks);
+    generateStaffStats(tasks);
 });
 
 document.getElementById('ownerFilter').addEventListener('change', () => {
-    loadTasks().then(tasks => {
-        renderGantt(tasks);
-        generateStaffStats(tasks);
-    });
+    renderGantt(tasks);
+    generateStaffStats(tasks);
 });
 
 document.getElementById('periodFilter').addEventListener('change', () => {
-    loadTasks().then(tasks => {
-        renderGantt(tasks);
-        generateStaffStats(tasks);
-    });
+    renderGantt(tasks);
+    generateStaffStats(tasks);
 });
 
 document.getElementById('toggleView').addEventListener('click', function() {
@@ -858,7 +858,7 @@ document.getElementById('toggleView').addEventListener('click', function() {
         this.textContent = 'Квартально';
     }
     this.classList.toggle('active');
-    loadTasks().then(tasks => renderGantt(tasks));
+    renderGantt(tasks);
 });
 
 // Фильтрация по клику на легенду
@@ -884,10 +884,8 @@ document.querySelectorAll('.legend-item').forEach(item => {
             });
         }
         
-        loadTasks().then(tasks => {
-            renderGantt(tasks);
-            generateStaffStats(tasks);
-        });
+        renderGantt(tasks);
+        generateStaffStats(tasks);
     });
 });
 
@@ -895,35 +893,24 @@ document.querySelectorAll('.legend-item').forEach(item => {
 document.addEventListener('DOMContentLoaded', function() {
     // Добавляем обработчик для кнопки администратора
     document.getElementById('adminButton').addEventListener('click', function() {
-        window.location.href = 'login.php';
+        window.location.href = 'admin.html';
     });
     
     // Настраиваем перетаскивание графика
     setupDragToScroll();
     
-    // Загружаем данные и инициализируем страницу
-    loadTasks().then(tasks => {
-        // Обновляем статусы задач на основе текущей даты
-        updateTaskStatuses(tasks);
-        
-        // Получаем сегодняшнюю дату 2025 года для отображения
-        const today = getCurrentDateFor2025Demo();
-        
-        // Добавляем информацию о текущей дате в заголовок
-        const dateInfo = document.createElement('div');
-        dateInfo.className = 'current-date-info';
-        dateInfo.innerHTML = `
-            <div style="margin-top: 10px; font-size: 0.9em; color: #777;">
-                Текущая дата: <strong>${formatDate(today)}</strong>
-            </div>
-        `;
-        document.querySelector('.title').appendChild(dateInfo);
-        
-        // Инициализируем страницу
-        populateOwnerFilter(tasks);
-        renderGantt(tasks);
-        generateStaffStats(tasks);
-    });
+    // Получаем сегодняшнюю дату 2025 года для отображения
+    const today = getCurrentDateFor2025Demo();
+    
+    // Добавляем информацию о текущей дате в заголовок
+    const dateInfo = document.createElement('div');
+    dateInfo.className = 'current-date-info';
+    dateInfo.innerHTML = `
+        <div style="margin-top: 10px; font-size: 0.9em; color: #777;">
+            Текущая дата: <strong>${formatDate(today)}</strong>
+        </div>
+    `;
+    document.querySelector('.title').appendChild(dateInfo);
 });
 </script>
 </body>
