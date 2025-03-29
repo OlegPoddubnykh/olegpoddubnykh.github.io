@@ -1,0 +1,52 @@
+# Настройка PHP в Nginx
+
+## 1. Проверьте конфигурацию Nginx
+Выполните команду:
+```
+sudo nano /etc/nginx/sites-available/default
+```
+
+## 2. Добавьте обработку PHP в блок server
+В блоке server для вашего сайта добавьте следующий код:
+
+```
+location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    include fastcgi_params;
+}
+```
+
+Убедитесь, что этот блок находится ПЕРЕД блоком location / и другими блоками location.
+
+## 3. Проверьте конфигурацию на ошибки
+```
+sudo nginx -t
+```
+
+## 4. Перезапустите Nginx
+```
+sudo systemctl restart nginx
+```
+
+## 5. Проверьте права доступа к файлам
+```
+sudo chown www-data:www-data /var/www/strategy -R
+sudo chmod 755 /var/www/strategy
+sudo chmod 644 /var/www/strategy/*.php
+sudo chmod 644 /var/www/strategy/roadmap-data.json
+```
+
+## 6. Проверьте статус PHP-FPM
+```
+sudo systemctl status php8.1-fpm
+```
+
+Если PHP-FPM не запущен, запустите его:
+```
+sudo systemctl start php8.1-fpm
+```
+
+## 7. Протестируйте PHP
+Создайте тестовый файл test-php.php и проверьте его доступность через браузер. 

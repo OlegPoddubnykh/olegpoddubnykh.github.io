@@ -132,6 +132,13 @@
                 localStorage.setItem('roadmapData', JSON.stringify(data));
                 console.log('Data saved to localStorage');
                 
+                // Проверяем доступность PHP на сервере
+                const phpSupported = await checkPhpSupport();
+                if (!phpSupported) {
+                    showNotification('warning', 'Данные сохранены только локально. PHP на сервере не доступен.');
+                    return;
+                }
+                
                 // Отправляем данные на сервер
                 console.log('Sending data to server...');
                 const response = await fetch('save-roadmap.php', {
@@ -196,169 +203,199 @@
         }
 
         // Загрузка данных
-        fetch('roadmap-data.json')
-            .then(response => response.json())
-            .then(data => {
-                // Проверяем, есть ли сохраненные данные в localStorage
-                const savedData = localStorage.getItem('roadmapData');
-                if (savedData) {
-                    data = JSON.parse(savedData);
+        async function checkPhpSupport() {
+            try {
+                const response = await fetch('test-php.php');
+                const text = await response.text();
+                console.log('PHP test response:', text);
+                
+                try {
+                    const data = JSON.parse(text);
+                    console.log('PHP supports JSON:', data);
+                    return true;
+                } catch (e) {
+                    console.error('PHP does not support JSON:', e);
+                    showNotification('warning', 'PHP не поддерживает JSON. Данные будут сохраняться только локально.');
+                    return false;
                 }
-                
-                console.log('Initial data:', data);
-                
-                const container = document.getElementById('roadmapTable');
-                hot = new Handsontable(container, {
-                    data: data.roadmap.map(item => [
-                        item.id,
-                        item.okr,
-                        item.kr,
-                        item.name,
-                        convertDateToDisplay(item.start),
-                        convertDateToDisplay(item.end),
-                        item.owner,
-                        item.metrics,
-                        item.status
-                    ]),
-                    rowHeaders: true,
-                    colHeaders: ['ID', 'OKR', 'KR', 'Название', 'Начало', 'Конец', 'Исполнитель', 'Метрики', 'Статус'],
-                    columns: [
-                        { readOnly: true },
-                        {},
-                        {},
-                        {},
-                        { 
-                            type: 'date',
-                            dateFormat: 'DD/MM/YYYY',
-                            correctFormat: true,
-                            defaultDate: new Date().toISOString().split('T')[0],
-                            datePickerConfig: {
-                                format: 'DD/MM/YYYY'
-                            }
-                        },
-                        { 
-                            type: 'date',
-                            dateFormat: 'DD/MM/YYYY',
-                            correctFormat: true,
-                            defaultDate: new Date().toISOString().split('T')[0],
-                            datePickerConfig: {
-                                format: 'DD/MM/YYYY'
-                            }
-                        },
-                        {},
-                        {},
-                        { 
-                            type: 'dropdown',
-                            source: ['not-started', 'in-progress', 'completed']
-                        }
-                    ],
-                    licenseKey: 'non-commercial-and-evaluation',
-                    contextMenu: true,
-                    contextMenuItems: [
-                        {
-                            name: 'Добавить строку выше',
-                            key: 'add_row_above',
-                            disabled: function() {
-                                return false;
-                            },
-                            action: function() {
-                                console.log('Context menu: add_row_above clicked');
-                                const row = hot.getSelectedLast()[0];
-                                console.log('Selected row:', row);
-                                const currentData = hot.getData();
-                                console.log('Current data before:', currentData);
-                                const newRow = createNewRow();
-                                console.log('New row:', newRow);
-                                currentData.splice(row, 0, newRow);
-                                console.log('Current data after:', currentData);
-                                hot.loadData(currentData);
-                                console.log('Data loaded');
-                            }
-                        },
-                        {
-                            name: 'Добавить строку ниже',
-                            key: 'add_row_below',
-                            disabled: function() {
-                                return false;
-                            },
-                            action: function() {
-                                console.log('Context menu: add_row_below clicked');
-                                const row = hot.getSelectedLast()[0];
-                                console.log('Selected row:', row);
-                                const currentData = hot.getData();
-                                console.log('Current data before:', currentData);
-                                const newRow = createNewRow();
-                                console.log('New row:', newRow);
-                                currentData.splice(row + 1, 0, newRow);
-                                console.log('Current data after:', currentData);
-                                hot.loadData(currentData);
-                                console.log('Data loaded');
-                            }
-                        },
-                        {
-                            name: 'Удалить строку',
-                            key: 'remove_row',
-                            disabled: function() {
-                                return false;
-                            },
-                            action: function() {
-                                console.log('Context menu: remove_row clicked');
-                                const row = hot.getSelectedLast()[0];
-                                const currentData = hot.getData();
-                                currentData.splice(row, 1);
-                                hot.loadData(currentData);
-                            }
-                        },
-                        {
-                            name: 'Дублировать строку',
-                            key: 'duplicate_row',
-                            disabled: function() {
-                                return false;
-                            },
-                            action: function() {
-                                console.log('Context menu: duplicate_row clicked');
-                                const row = hot.getSelectedLast()[0];
-                                const currentData = hot.getData();
-                                const rowData = currentData[row];
-                                const newRow = [...rowData];
-                                newRow[0] = currentData.length + 1; // Новый ID
-                                currentData.splice(row + 1, 0, newRow);
-                                hot.loadData(currentData);
-                            }
-                        },
-                        Handsontable.plugins.ContextMenu.SEPARATOR,
-                        {
-                            name: 'Копировать',
-                            key: 'copy'
-                        },
-                        {
-                            name: 'Вырезать',
-                            key: 'cut'
-                        },
-                        {
-                            name: 'Вставить',
-                            key: 'paste'
-                        }
-                    ],
-                    afterChange: function(changes) {
-                        if (changes) {
-                            console.log('Table changed:', changes);
-                            saveData();
-                        }
-                    }
-                });
+            } catch (e) {
+                console.error('PHP test failed:', e);
+                showNotification('warning', 'PHP не работает на сервере. Данные будут сохраняться только локально.');
+                return false;
+            }
+        }
 
-                // Добавляем тестовую кнопку для отладки
-                const debugButton = document.createElement('button');
-                debugButton.className = 'btn btn-warning position-fixed bottom-0 end-0 m-3';
-                debugButton.textContent = 'Добавить строку (тест)';
-                debugButton.onclick = function() {
-                    console.log('Debug button clicked');
-                    addRow(hot.getData().length);
-                };
-                document.body.appendChild(debugButton);
-            })
-            .catch(error => console.error('Error loading data:', error));
+        // Загрузка данных
+        (async function loadData() {
+            // Проверяем поддержку PHP на сервере
+            const phpSupported = await checkPhpSupport();
+            console.log('PHP supported:', phpSupported);
+
+            // Загружаем данные
+            fetch('roadmap-data.json')
+                .then(response => response.json())
+                .then(data => {
+                    // Проверяем, есть ли сохраненные данные в localStorage
+                    const savedData = localStorage.getItem('roadmapData');
+                    if (savedData) {
+                        data = JSON.parse(savedData);
+                    }
+                    
+                    console.log('Initial data:', data);
+                    
+                    const container = document.getElementById('roadmapTable');
+                    hot = new Handsontable(container, {
+                        data: data.roadmap.map(item => [
+                            item.id,
+                            item.okr,
+                            item.kr,
+                            item.name,
+                            convertDateToDisplay(item.start),
+                            convertDateToDisplay(item.end),
+                            item.owner,
+                            item.metrics,
+                            item.status
+                        ]),
+                        rowHeaders: true,
+                        colHeaders: ['ID', 'OKR', 'KR', 'Название', 'Начало', 'Конец', 'Исполнитель', 'Метрики', 'Статус'],
+                        columns: [
+                            { readOnly: true },
+                            {},
+                            {},
+                            {},
+                            { 
+                                type: 'date',
+                                dateFormat: 'DD/MM/YYYY',
+                                correctFormat: true,
+                                defaultDate: new Date().toISOString().split('T')[0],
+                                datePickerConfig: {
+                                    format: 'DD/MM/YYYY'
+                                }
+                            },
+                            { 
+                                type: 'date',
+                                dateFormat: 'DD/MM/YYYY',
+                                correctFormat: true,
+                                defaultDate: new Date().toISOString().split('T')[0],
+                                datePickerConfig: {
+                                    format: 'DD/MM/YYYY'
+                                }
+                            },
+                            {},
+                            {},
+                            { 
+                                type: 'dropdown',
+                                source: ['not-started', 'in-progress', 'completed']
+                            }
+                        ],
+                        licenseKey: 'non-commercial-and-evaluation',
+                        contextMenu: true,
+                        contextMenuItems: [
+                            {
+                                name: 'Добавить строку выше',
+                                key: 'add_row_above',
+                                disabled: function() {
+                                    return false;
+                                },
+                                action: function() {
+                                    console.log('Context menu: add_row_above clicked');
+                                    const row = hot.getSelectedLast()[0];
+                                    console.log('Selected row:', row);
+                                    const currentData = hot.getData();
+                                    console.log('Current data before:', currentData);
+                                    const newRow = createNewRow();
+                                    console.log('New row:', newRow);
+                                    currentData.splice(row, 0, newRow);
+                                    console.log('Current data after:', currentData);
+                                    hot.loadData(currentData);
+                                    console.log('Data loaded');
+                                }
+                            },
+                            {
+                                name: 'Добавить строку ниже',
+                                key: 'add_row_below',
+                                disabled: function() {
+                                    return false;
+                                },
+                                action: function() {
+                                    console.log('Context menu: add_row_below clicked');
+                                    const row = hot.getSelectedLast()[0];
+                                    console.log('Selected row:', row);
+                                    const currentData = hot.getData();
+                                    console.log('Current data before:', currentData);
+                                    const newRow = createNewRow();
+                                    console.log('New row:', newRow);
+                                    currentData.splice(row + 1, 0, newRow);
+                                    console.log('Current data after:', currentData);
+                                    hot.loadData(currentData);
+                                    console.log('Data loaded');
+                                }
+                            },
+                            {
+                                name: 'Удалить строку',
+                                key: 'remove_row',
+                                disabled: function() {
+                                    return false;
+                                },
+                                action: function() {
+                                    console.log('Context menu: remove_row clicked');
+                                    const row = hot.getSelectedLast()[0];
+                                    const currentData = hot.getData();
+                                    currentData.splice(row, 1);
+                                    hot.loadData(currentData);
+                                }
+                            },
+                            {
+                                name: 'Дублировать строку',
+                                key: 'duplicate_row',
+                                disabled: function() {
+                                    return false;
+                                },
+                                action: function() {
+                                    console.log('Context menu: duplicate_row clicked');
+                                    const row = hot.getSelectedLast()[0];
+                                    const currentData = hot.getData();
+                                    const rowData = currentData[row];
+                                    const newRow = [...rowData];
+                                    newRow[0] = currentData.length + 1; // Новый ID
+                                    currentData.splice(row + 1, 0, newRow);
+                                    hot.loadData(currentData);
+                                }
+                            },
+                            Handsontable.plugins.ContextMenu.SEPARATOR,
+                            {
+                                name: 'Копировать',
+                                key: 'copy'
+                            },
+                            {
+                                name: 'Вырезать',
+                                key: 'cut'
+                            },
+                            {
+                                name: 'Вставить',
+                                key: 'paste'
+                            }
+                        ],
+                        afterChange: function(changes) {
+                            if (changes) {
+                                console.log('Table changed:', changes);
+                                saveData();
+                            }
+                        }
+                    });
+
+                    // Добавляем тестовую кнопку для отладки
+                    const debugButton = document.createElement('button');
+                    debugButton.className = 'btn btn-warning position-fixed bottom-0 end-0 m-3';
+                    debugButton.textContent = 'Добавить строку (тест)';
+                    debugButton.onclick = function() {
+                        console.log('Debug button clicked');
+                        addRow(hot.getData().length);
+                    };
+                    document.body.appendChild(debugButton);
+                })
+                .catch(error => console.error('Error loading data:', error));
+        })();
     </script>
 </body>
 </html> 
