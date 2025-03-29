@@ -106,7 +106,7 @@
         }
 
         // Функция сохранения данных
-        function saveData() {
+        async function saveData() {
             if (!hot) return;
 
             const data = {
@@ -123,20 +123,50 @@
                 }))
             };
             
-            // Сохраняем в localStorage
-            localStorage.setItem('roadmapData', JSON.stringify(data));
-            
-            // Показываем уведомление об успешном сохранении
-            const notification = document.createElement('div');
-            notification.className = 'alert alert-success position-fixed top-0 end-0 m-3';
-            notification.style.zIndex = '1000';
-            notification.textContent = 'Данные сохранены';
-            document.body.appendChild(notification);
-            
-            // Удаляем уведомление через 2 секунды
-            setTimeout(() => {
-                notification.remove();
-            }, 2000);
+            try {
+                // Отправляем данные на сервер
+                const response = await fetch('save-roadmap.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to save data');
+                }
+
+                const result = await response.json();
+                
+                // Сохраняем в localStorage как резервную копию
+                localStorage.setItem('roadmapData', JSON.stringify(data));
+                
+                // Показываем уведомление об успешном сохранении
+                const notification = document.createElement('div');
+                notification.className = 'alert alert-success position-fixed top-0 end-0 m-3';
+                notification.style.zIndex = '1000';
+                notification.textContent = 'Данные сохранены на сервере';
+                document.body.appendChild(notification);
+                
+                // Удаляем уведомление через 2 секунды
+                setTimeout(() => {
+                    notification.remove();
+                }, 2000);
+            } catch (error) {
+                console.error('Error saving data:', error);
+                // Показываем уведомление об ошибке
+                const notification = document.createElement('div');
+                notification.className = 'alert alert-danger position-fixed top-0 end-0 m-3';
+                notification.style.zIndex = '1000';
+                notification.textContent = 'Ошибка при сохранении данных';
+                document.body.appendChild(notification);
+                
+                // Удаляем уведомление через 2 секунды
+                setTimeout(() => {
+                    notification.remove();
+                }, 2000);
+            }
         }
 
         // Загрузка данных
