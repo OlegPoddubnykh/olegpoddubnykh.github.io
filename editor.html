@@ -108,6 +108,8 @@
         // Функция сохранения данных
         async function saveData() {
             if (!hot) return;
+            
+            console.log('Saving data...');
 
             const data = {
                 roadmap: hot.getData().map(row => ({
@@ -123,8 +125,15 @@
                 }))
             };
             
+            console.log('Data prepared for saving:', data);
+            
             try {
+                // Сохраняем в localStorage в любом случае
+                localStorage.setItem('roadmapData', JSON.stringify(data));
+                console.log('Data saved to localStorage');
+                
                 // Отправляем данные на сервер
+                console.log('Sending data to server...');
                 const response = await fetch('save-roadmap.php', {
                     method: 'POST',
                     headers: {
@@ -132,41 +141,58 @@
                     },
                     body: JSON.stringify(data)
                 });
-
-                if (!response.ok) {
-                    throw new Error('Failed to save data');
+                
+                console.log('Server response status:', response.status);
+                
+                const responseText = await response.text();
+                console.log('Server response text:', responseText);
+                
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                    console.log('Parsed server response:', result);
+                } catch (parseError) {
+                    console.error('Failed to parse server response:', parseError);
+                    throw new Error(`Server returned invalid JSON: ${responseText}`);
                 }
 
-                const result = await response.json();
-                
-                // Сохраняем в localStorage как резервную копию
-                localStorage.setItem('roadmapData', JSON.stringify(data));
-                
+                if (!response.ok) {
+                    throw new Error(result.error || `Server error: ${response.status}`);
+                }
+
                 // Показываем уведомление об успешном сохранении
-                const notification = document.createElement('div');
-                notification.className = 'alert alert-success position-fixed top-0 end-0 m-3';
-                notification.style.zIndex = '1000';
-                notification.textContent = 'Данные сохранены на сервере';
-                document.body.appendChild(notification);
+                showNotification('success', 'Данные сохранены на сервере');
                 
-                // Удаляем уведомление через 2 секунды
-                setTimeout(() => {
-                    notification.remove();
-                }, 2000);
             } catch (error) {
                 console.error('Error saving data:', error);
-                // Показываем уведомление об ошибке
-                const notification = document.createElement('div');
-                notification.className = 'alert alert-danger position-fixed top-0 end-0 m-3';
-                notification.style.zIndex = '1000';
-                notification.textContent = 'Ошибка при сохранении данных';
-                document.body.appendChild(notification);
                 
-                // Удаляем уведомление через 2 секунды
-                setTimeout(() => {
-                    notification.remove();
-                }, 2000);
+                // Проверяем, была ли ошибка сети
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    showNotification('warning', 'Данные сохранены локально (нет подключения к серверу)');
+                } else {
+                    // Другие ошибки
+                    showNotification('danger', `Ошибка при сохранении на сервер: ${error.message}. Данные сохранены локально.`);
+                }
             }
+        }
+        
+        // Функция для отображения уведомлений
+        function showNotification(type, message) {
+            // Удаляем предыдущие уведомления
+            const existingNotifications = document.querySelectorAll('.alert');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            // Создаем новое уведомление
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+            notification.style.zIndex = '1000';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Удаляем уведомление через 3 секунды
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
         // Загрузка данных
